@@ -1,0 +1,23 @@
+Front end- home page set up
+Setup -Html,css designing the front of the welcome/homepage. Involves sketching, planning, and changing color schemes and fonts.
+Front end- user page
+
+Setup -The user's profile is set up, making a saved closet widget, saved posts
+-adding cart
+
+Front end -Login/Sign up
+Setup-login and sign up page where you can decide what dashboard to load and what type of user you are
+
+Front end- designer dashboard
+Setup -designer dashboard, bio, clothing items, followers, sales
+(divs, search bar, nav bar, pictures )
+
+Dev plan 
+Using html, css to plan out the first layer of code making sure that it all fits well 
+will end up using css bootstrap (framework) to make sure everything is to scale. Rough draft of plaements of each page. Focusing first on the welcome/login/sign up page then moving on to user and designer profiles. 
+
+Risks or questions
+• What might block you
+Might block me is being able to accuratley make a login and sign up page like how I am visualizing it
+• What you need from teammates
+I will need feedback on some features on the usuability and the aestetics. I need feedback if it looks the best it can look like 
