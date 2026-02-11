@@ -1,0 +1,19 @@
+1. What you are responsible for in Sprint 1
+• List the Trello cards you own
+
+I own the write core queries for feature 1 and the convert ERD to schema which is already done. Michael owns the turn the schema into tables and insert test data.
+
+2. Setup steps
+• Step by step instructions for what you need to install, configure, or create
+• Include commands, links, or screenshots if needed
+
+
+
+3. Development plan
+• Step by step plan for how you will build your cards this sprint
+• Include what files you expect to create or edit
+• Include what “done” looks like
+
+4. Risks or questions
+• What might block you
+• What you need from teammates
