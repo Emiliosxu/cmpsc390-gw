@@ -1,0 +1,55 @@
+
+
+Back end - set up login/signup
+
+Done means login feature intergrades front end with database. Login/sign up button works properly
+
+
+back end-set up user dashboard
+
+Done means feature intergrades front end with database. Dashboard feature works.
+
+
+
+backend- designer dashboard
+
+
+Done means feature intergrades front end with database. designer dashboard works.
+
+
+Setup steps(pseudocode logic)
+
+Im going to be coding using node.js and MySQL to intergrade frond end with the database
+
+set up login/signup logic:
+
+User starts sign up process by pressing on a sign up option
+Show required fields user_name, user email, user_password 
+
+Backend:
+Receive sign up request;
+check if required fields are filled 
+check if email exist in the database 
+Return error if account already exists
+create new user 
+set subscription_type to free
+
+Database:
+Checking for stored emails
+Storing new users 
+
+Designer starts sign up process by pressing on a designer sign up option
+Show required fields for brand_name, brand_email, designer_password
+
+Backend:
+Receive sign up request;
+check if required fields are filled 
+check if email exist in the designer database 
+Return error if account already exists
+create new designer 
+
+Database:
+Checking for stored emails
+Storing new designers
+
+
