@@ -1,0 +1,17 @@
+1. What you are responsible for in Sprint 1
+• I own Turn the schema into tables and insert test data
+• Rami owns Convert ER diagram into relational schema and write core queries for feature 1
+
+2. Setup steps
+I will need to install the MySQL package
+• I need to create tables and insert data into each table created from the relational schema
+• The image of the schema is in the main branch that the tables will be made from
+
+3. Development plan
+• Cards for this sprint would look like setting up the basics for the database like creating the ER diagram and turning it into a schema, which is already done, then turning that schema into tables with data, and then finally creating queries to test our first main feature.
+• I would need to create the files for the actual data in the data tables in the database which would be sql code and files. Which can be edited at anytime.
+• Being done would look like their being data in all of the tables.
+
+4. Risks or questions
+• Mistakes can be what type of the data is entered if its not the correct data type
+• Since me and Rami are splitting it up we each need to do our parts so we can combine it
