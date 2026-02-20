@@ -8,7 +8,8 @@
     <title>My Web Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
 
     <style>
         body {
@@ -64,7 +65,16 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            /* Makes the container fill the full viewport height */
+        }
+
+        #carouselExampleSlidesOnly {
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        #carouselExampleSlidesOnly img {
+            height: 250px;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -97,13 +107,16 @@
                 <img class="d-block w-100" src="clothes.jpg" alt="First slide">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="clothes.jpg" alt="Second slide">
+                <img class="d-block w-100" src="clothes2.jpg" alt="Second slide">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="clothes.jpg" alt="Third slide">
+                <img class="d-block w-100" src="clothes3.jpg" alt="Third slide">
             </div>
         </div>
     </div>
+
+
+
     <br>
     <div class="container-flex">
 
