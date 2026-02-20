@@ -17,20 +17,36 @@
         }
 
         h1 {
+            text-align: center;
             color: #333;
         }
 
         p {
+            text-align: justify;
             font-size: 16px;
             line-height: 1.5;
         }
 
         div {
-            margin-top: 20px;
-            outline: auto;
+            margin-top: 30px;
+            margin-left: 30px;
+            margin-right: 30px;
+            outline: 1px dashed #2a356d;
             border-top-style: dashed;
             border-width: 1px;
             border-color: #272e4f;
+        }
+
+        .chrome-effect {
+            /* Using a gradient with light and dark stops to simulate a metallic shine */
+            background: linear-gradient(to bottom, #ffffff, #f0f0f0, #dcdcdc, #707070, #c0c0c0);
+            border: 1px solid #535353;
+            color: #333;
+            padding: 10px;
+            text-align: center;
+            /* Additional effects for realism */
+            box-shadow: 0 4px 6px rgba(75, 55, 55, 0.2);
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -47,12 +63,15 @@
 
 
     </nav>
-    <div>
+    <div class="chrome-effect">
         <p>
-        <h1>Welcome to Stlyix </h1> A fashion company that designers and users can access range of stylish clothing and
+        <h1>Welcome to Stlyix </h1> <br>
+        A fashion company that designers and users can access range of stylish clothing and
         accessories.
         </p>
     </div>
+    <br>
+
     <form action="post " label for="email"> Email: <input type="email" id="email" name="email" required> <br><br>
         <label for="password"> Password: <input type="password" id="password" name="password" required> <br><br>
             <input type="submit" value="Login">
