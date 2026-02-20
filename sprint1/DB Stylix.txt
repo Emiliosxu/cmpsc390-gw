@@ -1,0 +1,82 @@
+CREATE TABLE USER
+(
+  user_id INT NOT NULL,
+  user_name VARCHAR(100) NOT NULL,
+  user_email VARCHAR(100) NOT NULL,
+  body_type VARCHAR(100) NOT NULL,
+  subscription_type VARCHAR(100),
+  user_password VARCHAR(255) NOT NULL,
+  height_in INT NOT NULL,
+  weight_lb INT NOT NULL,
+  PRIMARY KEY (user_id),
+  UNIQUE (user_email)
+);
+
+CREATE TABLE DESIGNER
+(
+  designer_id INT NOT NULL,
+  brand_name VARCHAR(255) NOT NULL,
+  brand_email VARCHAR(255) NOT NULL,
+  designer_password VARCHAR(255) NOT NULL,
+  PRIMARY KEY (designer_id),
+  UNIQUE (brand_email)
+);
+
+CREATE TABLE CLOTHING_ITEM
+(
+  item_id INT NOT NULL,
+  category VARCHAR(255) NOT NULL,
+  style VARCHAR(255) NOT NULL,
+  price NUMERIC(10, 2) NOT NULL,
+  image_url VARCHAR(255) NOT NULL,
+  item_name VARCHAR(255) NOT NULL,
+  occasion VARCHAR(255),
+  size_range INT NOT NULL,
+  inventory INT NOT NULL,
+  designer_id INT NOT NULL,
+  PRIMARY KEY (item_id),
+  FOREIGN KEY (designer_id) REFERENCES DESIGNER(designer_id)
+);
+
+CREATE TABLE SAVED_CLOSET
+(
+  closet_id INT(255) NOT NULL,
+  user_id INT NOT NULL,
+  PRIMARY KEY (closet_id),
+  FOREIGN KEY (user_id) REFERENCES USER(user_id)
+);
+
+CREATE TABLE ORDERS
+(
+  order_id INT NOT NULL,
+  status VARCHAR(255) NOT NULL,
+  user_id INT NOT NULL,
+  PRIMARY KEY (order_id),
+  FOREIGN KEY (user_id) REFERENCES USER(user_id)
+);
+
+CREATE TABLE SAVED_IN
+(
+  closet_id INT NOT NULL,
+  item_id INT NOT NULL,
+  PRIMARY KEY (closet_id, item_id),
+  FOREIGN KEY (closet_id) REFERENCES SAVED_CLOSET(closet_id),
+  FOREIGN KEY (item_id) REFERENCES CLOTHING_ITEM(item_id)
+);
+
+CREATE TABLE CONTAINS
+(
+  order_id INT NOT NULL,
+  item_id INT NOT NULL,
+  PRIMARY KEY (order_id, item_id),
+  FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
+  FOREIGN KEY (item_id) REFERENCES CLOTHING_ITEM(item_id)
+);
+
+CREATE TABLE USER_PREFERENCES
+(
+  preferences VARCHAR(255) NOT NULL,
+  user_id INT NOT NULL,
+  PRIMARY KEY (preferences),
+  FOREIGN KEY (user_id) REFERENCES USER(user_id)
+);
