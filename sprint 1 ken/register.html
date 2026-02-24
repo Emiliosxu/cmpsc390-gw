@@ -12,7 +12,7 @@
         <style>
             body {
                 background-color: #06194e;
-                background: linear-gradient(135deg, #06194e, #2D83A6, #c30739);
+                background: linear-gradient(135deg, #06194e, #2D83A6, #4c07c3);
                 background-size: 300% 300%;
                 animation: gradientMove 10s ease infinite;
 
@@ -80,8 +80,9 @@
 
             .container-flex {
                 display: flex;
-                justify-content: center;
-                align-items: center;
+                justify-content: flex-start;
+                align-items: flex-start;
+                padding-inline-start: 30px;
                 height: 100vh;
             }
 
@@ -121,18 +122,38 @@
         <br>
         <div class="container-flex">
 
+            <form class="chrome-effect" method="POST" action="">
 
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <br><br>
 
-            <form class="chrome-effect" action="post " <label for="name "> name : <input type="text" id="name "
-                    name="name " required> <br><br>
-                <label for="username"> Username: <input type="text" id="username" name="username" required> <br><br>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <br><br>
 
-                    <label for="email"> Email: <input type="email" id="email" name="email" required> <br><br>
-                        <label for="password"> Password: <input type="password" id="password" name="password" required>
-                            <br><br>
-                            <input type="submit" value="Login">
-                            <input type="submit" value="Register">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <br><br>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <br><br>
+
+                <!-- ACCOUNT TYPE SECTION -->
+                <label>Account Type:</label><br>
+
+                <input type="radio" id="user" name="accountType" value="user" required>
+                <label for="user">User</label>
+
+                <input type="radio" id="designer" name="accountType" value="designer">
+                <label for="designer">Designer</label>
+
+                <br><br>
+
+                <input type="submit" value="Register">
             </form>
+
         </div>
     </body>
 
