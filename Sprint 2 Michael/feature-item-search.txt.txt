@@ -1,0 +1,26 @@
+Part 1
+
+Feature Name: Item/Search Filter of Items
+
+As a User I want to search or be able to filter for the items that I am searching for.
+
+This adds value to the project because it allows users to be able to search for items they are looking for by a certain tag or category.
+
+This feature touches the front-end UI and the database.
+
+Part 2
+
+1. The problem this feature solves is users will now be able to search for the items they are looking for either directly or indirectly by searching tags that the items are under.
+
+2. User will type in the search bar either the item or a tag of the item.
+The user can then add the item to their cart if they searched for the item they were looking for.
+
+3. Front-end changes: Add search bar
+Back-end: adding tags to the items on the website 
+Database: connecting the tags to the items so when a tag gets searched those items with those tags appear.
+
+4. I will set up new routes and a request and response structure to connect the search bar with the database to actually search up the item or tags.
+
+5. I will need to update tables in the database to be able to add the tags for items
+
+6. When I can search up an item by the tag or filter then I know my feature is finished.  
