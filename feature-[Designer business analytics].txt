@@ -1,0 +1,35 @@
+Part 1
+
+Feature Name: Business analytics for designer dashboard
+
+As a user, I want to check my designer page so that I can see how many items were sold, how much inventory is left, and my estimated profit over time.
+
+- This adds value because designers need quick insights for their performance in sales. Analytics for designers can help them identify which dashboard changes would improve their sales.
+
+UI: Analytics dashboard 
+Backend: Code that returns analytics data
+Database: SQL queries for designer
+No API 
+
+
+Part 2
+
+1.	Problem Statement
+
+Designers currently can't track their performance on the website, meaning they can't see how they are performing in sales. This feature will solve that by adding an analytics section that will summarize the sales and inventory data using tables in the database.
+
+
+2.	User Flow
+Step by step from start to finish
+
+The designer will navigate the Designer Dashboard page. They will click on an "Analytics" section on the dashboard, where the page will send a request to the backend with the designer's id. Backend will run SQL queries to calculate. The backend will return the data to the frontend. The front end will display everything depending on who the designer is.
+
+3.	Technical Plan
+Frontend changes
+Backend routes
+Database changes
+Files expected to be created or modified
+
+Frontend changes will include an analytics section, cards, and JavaScript. The backend routes will read the designerID, run queries, and return results. Database changes will just keep the same tables and relationships we made. If we need to test things, we will add data. Files expected to be created or modified are the designer dashboard with HTML and JavaScript for the frontend. For API changes, there will be new routes by having the DesignerID get passed in the URL. For my acceptance criteria, if designers are able to access the analytics tools that show correct data of profits, then I am done. 
+
+
