@@ -1,0 +1,99 @@
+Part 1: Feature Definition
+As a team, each team member must define:
+1. Feature Name
+Saved Closet / Like Feature
+2. User Story
+As a logged-in user, I want to like a designer’s item so that I can save it to 
+my personal closet and view it later.As a user, I want to view all the items I have liked in one place so that I can manage my saved fashion pieces.As a designer, I want to be notified when a user saves my item so that I can track engagement and interest in my designs.
+
+3. Why this adds value to the project
+
+4. What layers it touches:
+• UI- explore/ closet front end 
+
+• Backend - designer likes, notification, likes count item 
+
+• Database
+
+• External API if applicable
+
+Part 2: Feature Brief Documentation
+1. Problem Statement
+What problem does this solve?
+This feature allows users to like the cards with the item information and the designer gets notified when someone
+saves their item, and the like feature adds and keeps count of how many items the user has liked as well as well as liking acertain designer itll get savedKeep a count of total likes per item. The closet feature will also be automatic when the user likes a card itll get added to a personal closet.
+ 
+2. User Flow
+Step by step from start to finish
+-user logs in( regular user ) 
+-browese explore page 
+-user clicks llike button on desinger card  
+-increases count
+-system saves item to the closet 
+-User can click on a button to like a card with the designer information
+-sends notification to designer 
+-user
+-views saved items in cloest 
+-remove items 
+
+3. Technical Plan
+Frontend changes
+modify home page/ explore 
+modify userdash 
+and using javascript to update cards 
+add button 
+closet section 
+
+Backend routes
+1. like item 
+2. unlike 
+3. getUSercloest 
+4.likeDesigner 
+(designerID  userID Item ID lIke ID /count )
+
+Database changes
+
+Files expected to be created or modified
+
+4. API Changes
+userID -> New routes items like -> and then saved to closet 
+
+Modified routes
+Request and response structure
+ get 
+userID/closet 
+
+5. Database Changes
+New tables - likes table,cloest table , liked designer table, notification table, 
+Schema updates
+New fields
+
+
+6. Acceptance Criteria
+Clear definition of done
+Must be testable
+Item like count increases
+
+ Item is saved to user's Closet
+
+ User cannot like same item twice
+
+ Designer receives notification
+
+ Like persists after page refresh
+
+---
+Displays all liked items
+
+ Shows item image, name, designer
+
+ User can remove item
+
+ Removing decreases like count
+
+----
+User can like designer
+
+ Designer sees like count increase
+
+ User cannot like twice
