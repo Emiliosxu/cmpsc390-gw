@@ -1,0 +1,17 @@
+TEST DATA
+
+INSERT INTO USER (user_id, user_name, user_email, body_type, subscription_type, user_password, height_in, weight_lb) VALUES (1, 'John Smith', 'johnsmith@test.com', 'Medium', 'Free', 'hashedpass', 70, 180);
+
+INSERT INTO DESIGNER (designer_id, brand_name, brand_email, designer_password) VALUES (1, 'UrbanStyle', 'urbanstyle@test.com', 'hashedpass');
+
+INSERT INTO CLOTHING_ITEM (item_id, category, style, price, image_url, item_name, occasion, size_range, inventory, designer_id) VALUES (1, 'Tops', 'Casual', 49.99, 'hoodie.jpg', 'Black Hoodie', 'Casual', 42, 10, 1);
+
+INSERT INTO SAVED_CLOSET (closet_id, user_id) VALUES (1, 1);
+
+INSERT INTO SAVED_IN (closet_id, item_id) VALUES (1, 1);
+
+INSERT INTO ORDERS (order_id, status, user_id) VALUES (1, 'Completed', 1);
+
+INSERT INTO CONTAINS (order_id, item_id) VALUES (1, 1);
+
+INSERT INTO USER_PREFERENCES (preferences, user_id) VALUES ('Casual', 1);
