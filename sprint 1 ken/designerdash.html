@@ -177,15 +177,14 @@
 
 <body>
     <nav class="navbar">
-        <a href="index.html">Home</a> |
-        <a href="aboutus.html">About Us</a> |
-        <a href="contact.html">Contact Us</a>|
-        <a href="login.html">Login</a>|
-        <a href="register.html">Register</a>|
-        <a href="userdash.html">User Dashboard</a>|
-        <a href="designerdash.html">Designer Dashboard</a>|
+        <a href="/">Home</a> |
+        <a href="/about">About Us</a> |
+        <a href="/contact">Contact Us</a> |
+        <a href="/login">Login</a> |
+        <a href="/register">Register</a> |
+        <a href="/userdash">User Dashboard</a> |
+        <a href="/designerdash">Designer Dashboard</a>
     </nav>
-
 
     <div class="container-flex">
         <div class="dashboard-card">
@@ -209,8 +208,8 @@
 
     </div>
     <form action="/add-item" method="POST">
-        <input type="text" name="designer" placeholder="Designer name">
-        <input type="text" name="image" placeholder="Image file name">
+        <input type="text" name="designerName" placeholder="Designer Name" required>
+        <input type="text" name="imagePath" placeholder="Image file name (e.g. clothes2.jpg)" required>
         <button type="submit">Add Item</button>
     </form>
 
