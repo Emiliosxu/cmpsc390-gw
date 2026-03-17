@@ -1,0 +1,115 @@
+require("dotenv").config();
+
+const express = require("express");
+const mysql = require("mysql2");
+const cors = require("cors");
+
+const app = express();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+// middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public")); // serve HTML files
+
+// db
+const db = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+});
+
+db.connect(err => {
+    if (err) {
+        console.log("DB error", err);
+        return;
+    }
+    console.log("DB connected");
+});
+
+// Route to get items 
+app.get("/items", (req, res) => {
+    const sql = `
+        SELECT clothing_item.item_id, clothing_item.item_name, clothing_item.price,
+               clothing_item.image_url, clothing_item.category, clothing_item.size_range,
+               designer.brand_name
+        FROM clothing_item
+        JOIN designer ON clothing_item.designer_id = designer.designer_id
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: "DB error" });
+        }
+        res.json(results);
+    });
+});
+
+// gets cart items details w/o starting Stripe session
+app.post("/get-cart-items", (req, res) => {
+    const { cart } = req.body;
+
+    if (!cart || cart.length === 0) {
+        return res.json({ items: [] });
+    }
+
+    const sql = `
+        SELECT clothing_item.item_id, clothing_item.item_name, clothing_item.price,
+               clothing_item.image_url, designer.brand_name
+        FROM clothing_item
+        JOIN designer ON clothing_item.designer_id = designer.designer_id
+        WHERE clothing_item.item_id IN (?)
+    `;
+
+    db.query(sql, [cart], (err, results) => {
+        if (err) {
+            console.error("DB error:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        res.json({ items: results });
+    });
+});
+
+//creates Stripe session
+app.post("/create-checkout-session", (req, res) => {
+    const { cart } = req.body;
+
+    if (!cart || cart.length === 0) return res.status(400).json({ error: "Cart empty" });
+
+    const sql = `
+        SELECT item_id, item_name, price
+        FROM clothing_item
+        WHERE item_id IN (?)
+    `;
+
+    db.query(sql, [cart], async (err, results) => {
+        if (err) return res.status(500).json({ error: "DB error" });
+
+        try {
+            const line_items = results.map(item => ({
+                price_data: {
+                    currency: "usd",
+                    product_data: { name: item.item_name },
+                    unit_amount: Math.round(item.price * 100)
+                },
+                quantity: 1
+            }));
+
+            const session = await stripe.checkout.sessions.create({
+                mode: "payment",
+                line_items,
+                success_url: "http://localhost:3000/success.html",
+                cancel_url: "http://localhost:3000/cancel.html"
+            });
+
+            res.json({ sessionId: session.id, items: results });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+});
+
+//start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
