@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SHOP ALL</title>
+<style>
+body { background: linear-gradient(135deg,#06194e,#7ebbd3,#4c07c3); font-family: Arial, sans-serif; margin:20px; color:white; }
+.navbar { background: rgb(35, 39, 96); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.3); box-shadow:0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4); backdrop-filter: blur(12px);}
+.navbar a { color:white; text-decoration:none; margin-right:10px; }
+
+#items-container { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin-top:20px; }
+
+.card { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius:10px; padding:10px; margin:0; text-align:center; }
+.card-img { width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:5px; }
+.card h3, .card p { font-size:0.85rem; margin:3px 0; }
+.card-buttons { display:flex; gap:5px; justify-content:center; margin-top:5px; }
+.btn { padding:5px 8px; cursor:pointer; background:transparent; border:1px solid #272e4f; color:#a7b4d8; border-radius:5px; font-size:0.8rem; transition:0.3s; }
+.btn:hover { background:#20157e; color:white; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html">Home</a> |
+    <a href="/about">About Us</a>|
+        <a href="/contact">Contact Us</a>|
+        <a href="/login">Login</a>|
+        <a href="/register">Register</a>|
+    <a href="checkout.html" id="cart-btn">Cart 🛒</a>
+</nav>
+
+<h1>Shop</h1>
+<div id="items-container"></div>
+
+<script>
+async function loadItems() {
+    const res = await fetch("/items");
+    const items = await res.json();
+    const container = document.getElementById("items-container");
+    container.innerHTML = "";
+
+    items.forEach(item => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.dataset.id = item.item_id;
+        div.innerHTML = `
+            <img src="${item.image_url}" class="card-img">
+            <h3>${item.item_name}</h3>
+            <p>Brand: ${item.brand_name}</p>
+            <p>$${item.price}</p>
+            <p>${item.category}</p>
+            <p>Sizes: ${item.size_range}</p>
+            <div class="card-buttons">
+                <button class="btn" onclick="addToCart(${item.item_id})">Add to Cart</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function addToCart(id){
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Added to cart");
+
+    // Optional: trigger a storage event manually for the same tab
+    window.dispatchEvent(new Event('storage'));
+}
+
+loadItems();
+</script>
+<div style="position:fixed; bottom:10px; right:10px; background:rgba(0,0,0,0.8); padding:10px; border-radius:5px; z-index:1000;">
+    <button onclick="localStorage.removeItem('cart'); alert('Cart cleared')">Clear Cart</button>
+</div>
+</body>
+</html>
