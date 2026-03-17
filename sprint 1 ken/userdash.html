@@ -254,7 +254,20 @@
                 var panel = document.getElementById(id);
 
                 if (panel) {
-                    panel.toggleAttribute('hidden'); // Toggles the presence of the hidden attribute
+                    panel.toggleAttribute('hidden');
+
+                    // Load liked items when opening
+                    if (!panel.hidden && id === 'liked-closet') {
+                        fetch('/liked-items')
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    panel.innerHTML = data.items.length
+                                        ? data.items.map(i => `<p>Item #${i.ItemID} — liked on ${i.LikedDate}</p>`).join('')
+                                        : '<p>No liked items yet.</p>';
+                                }
+                            });
+                    }
                 }
             });
 

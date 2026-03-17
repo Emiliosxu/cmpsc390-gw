@@ -229,6 +229,7 @@
             <div class="card-buttons">
                 <button class="btn">Add to Cart</button>
                 <button class="btn">View</button>
+            <button class="btn like-btn">Like</button>
             </div>
         </div>
 
@@ -238,7 +239,7 @@
             <div class="card-buttons">
                 <button class="btn">Add to Cart</button>
                 <button class="btn">View</button>
-                <button class="btn">like</button>
+        <button class="btn like-btn">Like</button>
             </div>
         </div>
         <div class="card" data-id="3">
@@ -247,7 +248,7 @@
             <div class="card-buttons">
                 <button class="btn">Add to Cart</button>
                 <button class="btn">View</button>
-                <button class="btn">like</button>
+                <button class="btn like-btn">Like</button>
             </div>
         </div>
         <div class="card" data-id="4">
@@ -256,7 +257,7 @@
             <div class="card-buttons">
                 <button class="btn">Add to Cart</button>
                 <button class="btn">View</button>
-                <button class="btn">like</button>
+                <button class="btn like-btn">Like</button>
             </div>
         </div>
         <div class="card" data-id="5">
@@ -265,7 +266,7 @@
             <div class="card-buttons">
                 <button class="btn">Add to Cart</button>
                 <button class="btn">View</button>
-                <button class="btn">like</button>
+                <button class="btn like-btn">Like</button>
             </div>
         </div>
     </section>
@@ -278,41 +279,28 @@
 
 
     <script>
-        document.addEventListener('click', function (e) {
-            var btn = e.target.closest('button[data-target]');
-            if (!btn) return;
+        document.addEventListener("click", function (e) {
+            if (!e.target.classList.contains("like-btn")) return;
 
-            var id = btn.getAttribute('data-target');
-            var panel = document.getElementById(id);
-            if (panel) {
-                panel.hidden = !panel.hidden;
-            }
+            const card = e.target.closest(".card");
+            const itemId = card.dataset.id;
+
+            fetch("/like-item", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ itemId: itemId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Liked successfully!");
+                    } else {
+                        alert("Error saving like.");
+                    }
+                });
         });
 
 
-        app.post("/like-item", (req, res) => {
-
-            const { itemId } = req.body;
-
-            const userId = 1; // temporary (later we use login system)
-
-            const sql = `
-        INSERT INTO Liked_closet (UserID, ItemID)
-        VALUES (?, ?)
-    `;
-
-            db.query(sql, [userId, itemId], (err, result) => {
-
-                if (err) {
-                    console.log(err);
-                    return res.json({ success: false });
-                }
-
-                res.json({ success: true });
-
-            });
-
-        });
 
     </script>
 </body>
