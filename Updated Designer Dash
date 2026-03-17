@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Designer Dashboard</title>
+
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+
+    <!-- Bootstrap scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Page background */
+        body {
+            background: linear-gradient(135deg, #06194e, #2D83A6, #4c07c3);
+            background-size: 300% 300%;
+            animation: gradientMove 10s ease infinite;
+            font-family: 'Raleway', sans-serif;
+            color: #F0F0F2;
+            margin: 20px;
+        }
+
+        /* Background animation */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgb(35, 39, 96);
+            padding: 10px;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .navbar a {
+            color: #dce7ff;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+
+        /* Layout */
+        .container-flex {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        /* Cards */
+        .dashboard-card {
+            width: 320px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        /* Buttons */
+        .dashboard-btn {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Profile image */
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+
+        /* Analytics layout */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        /* Small boxes */
+        .stat-box {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation bar -->
+    <nav class="navbar">
+        <a href="index.html">Home</a> |
+        <a href="aboutus.html">About</a> |
+        <a href="contact.html">Contact</a> |
+        <a href="login.html">Login</a> |
+        <a href="designerdash.html?brand_name=UrbanStyle">Dashboard</a>
+    </nav>
+
+    <div class="container-flex">
+
+        <!-- Profile section -->
+        <div class="dashboard-card">
+            <img src="https://via.placeholder.com/150" class="profile-img">
+
+            <!-- Name comes from URL -->
+            <h4 id="designer-name">Loading...</h4>
+
+            <p>Designer</p>
+
+            <button class="dashboard-btn">Profile</button>
+            <button class="dashboard-btn">Settings</button>
+        </div>
+
+        <!-- Main dashboard -->
+        <div class="dashboard-card">
+            <h3>Designer Dashboard</h3>
+
+            <button class="dashboard-btn">Create Project</button>
+            <button class="dashboard-btn">View Projects</button>
+
+            <!-- Click to load analytics -->
+            <button class="dashboard-btn" onclick="loadAnalytics()">Analytics</button>
+        </div>
+
+        <!-- Analytics section (hidden at first) -->
+        <div class="dashboard-card" id="analytics-card" style="display:none;">
+            <h3>Analytics</h3>
+
+            <div class="analytics-grid">
+
+                <!-- Items sold -->
+                <div class="stat-box">
+                    <div>Items Sold</div>
+                    <div id="items-sold">-</div>
+                </div>
+
+                <!-- Revenue -->
+                <div class="stat-box">
+                    <div>Revenue</div>
+                    <div>$<span id="total-revenue">-</span></div>
+                </div>
+
+                <!-- Inventory -->
+                <div class="stat-box">
+                    <div>Inventory Left</div>
+                    <div id="inventory-left">-</div>
+                </div>
+            </div>
+
+            <!-- Message -->
+            <p id="analytics-summary"></p>
+
+            <!-- Buttons -->
+            <button class="dashboard-btn" onclick="loadAnalytics()">Refresh</button>
+            <button class="dashboard-btn" onclick="hideAnalytics()">Hide</button>
+        </div>
+
+    </div>
+
+<script>
+/* Get name from URL */
+function loadBrandName() {
+    const params = new URLSearchParams(window.location.search);
+    const brandName = params.get("brand_name");
+
+    document.getElementById("designer-name").textContent = brandName || "UrbanStyle";
+}
+
+/* Load analytics from backend */
+async function loadAnalytics() {
+    const card = document.getElementById("analytics-card");
+    const summary = document.getElementById("analytics-summary");
+
+    // Show analytics
+    card.style.display = "block";
+
+    try {
+        // Call backend
+        const res = await fetch("http://localhost:3000/designer/analytics");
+        const data = await res.json();
+
+        // Update numbers
+        document.getElementById("items-sold").textContent = data.items_sold;
+        document.getElementById("total-revenue").textContent = data.total_revenue;
+        document.getElementById("inventory-left").textContent = data.inventory_left;
+
+        // Simple message
+        summary.textContent = data.items_sold > 5
+            ? "Sales are doing well!"
+            : "Sales are still growing!";
+
+    } catch {
+        summary.textContent = "Error loading analytics";
+    }
+}
+
+/* Hide analytics */
+function hideAnalytics() {
+    document.getElementById("analytics-card").style.display = "none";
+}
+
+/* Run when page loads */
+document.addEventListener("DOMContentLoaded", loadBrandName);
+</script>
+
+</body>
+</html>
