@@ -1,0 +1,6 @@
+STRIPE_SECRET_KEY=sk_test_temp
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=
+PORT=3000
