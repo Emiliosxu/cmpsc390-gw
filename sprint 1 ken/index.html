@@ -223,7 +223,7 @@
     </div>
 
     <section class="content-grid">
-        <div class="card">
+        <div class="card" data-id="1">
             <img src="clothes2.jpg" alt="Item 1" class="card-img">
             <h3 class="designer-name">Designer: Alice</h3>
             <div class="card-buttons">
@@ -232,7 +232,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" data-id="2">
             <img src="clothes3.jpg" alt="Item 2" class="card-img">
             <h3 class="designer-name">Designer: Bob</h3>
             <div class="card-buttons">
@@ -241,7 +241,7 @@
                 <button class="btn">like</button>
             </div>
         </div>
-        <div class="card">
+        <div class="card" data-id="3">
             <img src="clothes4.jpg" alt="Item 3" class="card-img">
             <h3 class="designer-name">Designer: Charlie</h3>
             <div class="card-buttons">
@@ -250,7 +250,7 @@
                 <button class="btn">like</button>
             </div>
         </div>
-        <div class="card">
+        <div class="card" data-id="4">
             <img src="clothes5.jpg" alt="Item 4" class="card-img">
             <h3 class="designer-name">Designer: David</h3>
             <div class="card-buttons">
@@ -259,7 +259,7 @@
                 <button class="btn">like</button>
             </div>
         </div>
-        <div class="card">
+        <div class="card" data-id="5">
             <img src="clothes6.jpg" alt="Item 5" class="card-img">
             <h3 class="designer-name">Designer: Eve</h3>
             <div class="card-buttons">
@@ -275,6 +275,46 @@
     <footer class="footer">
         <p>&copy; 2026 My Explore Page</p>
     </footer>
+
+
+    <script>
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('button[data-target]');
+            if (!btn) return;
+
+            var id = btn.getAttribute('data-target');
+            var panel = document.getElementById(id);
+            if (panel) {
+                panel.hidden = !panel.hidden;
+            }
+        });
+
+
+        app.post("/like-item", (req, res) => {
+
+            const { itemId } = req.body;
+
+            const userId = 1; // temporary (later we use login system)
+
+            const sql = `
+        INSERT INTO Liked_closet (UserID, ItemID)
+        VALUES (?, ?)
+    `;
+
+            db.query(sql, [userId, itemId], (err, result) => {
+
+                if (err) {
+                    console.log(err);
+                    return res.json({ success: false });
+                }
+
+                res.json({ success: true });
+
+            });
+
+        });
+
+    </script>
 </body>
 
 </html>
