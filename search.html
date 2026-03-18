@@ -27,7 +27,10 @@ body {
 <h1 class="text-center">Search Clothing</h1>
 
 <div class="container">
-    <input type="text" id="searchInput" class="form-control"
+    <input 
+        type="text" 
+        id="searchInput" 
+        class="form-control"
         placeholder="Search (Casual, Formal, Work, Everyday)">
 </div>
 
@@ -37,26 +40,43 @@ body {
 const input = document.getElementById("searchInput");
 
 input.addEventListener("keyup", function () {
-    let query = input.value;
+    let query = input.value.trim();
 
-    fetch("search.php?q=" + query)
+    // Don't search if empty
+    if (query.length === 0) {
+        document.getElementById("results").innerHTML = "";
+        return;
+    }
+
+    fetch("http://localhost:3000/search?q=" + encodeURIComponent(query))
         .then(res => res.json())
         .then(data => {
+            console.log(data); 
+
             let output = "";
-            data.forEach(item => {
-                output += `
-                    <div class="col-md-3">
-                        <div class="card">
-                            <img src="${item.image_url}" style="width:100%; height:150px; object-fit:cover;">
-                            <h5>${item.item_name}</h5>
-                            <p>Style: ${item.style}</p>
-                            <p>Use: ${item.occasion}</p>
-                            <p>$${item.price}</p>
+
+            if (data.length === 0) {
+                output = "<p class='text-center w-100'>No results found</p>";
+            } else {
+                data.forEach(item => {
+                    output += `
+                        <div class="col-md-3">
+                            <div class="card">
+                                <img src="${clothing_item.image_url}" style="width:100%; height:150px; object-fit:cover;">
+                                <h5>${clothing_item.item_name}</h5>
+                                <p>Style: ${clothing_item.style}</p>
+                                <p>Use: ${clothing_item.occasion}</p>
+                                <p>$${clothing-item.price}</p>
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
+
             document.getElementById("results").innerHTML = output;
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
         });
 });
 </script>
