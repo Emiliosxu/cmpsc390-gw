@@ -4,7 +4,22 @@
 <meta charset="UTF-8">
 <title>Payment Canceled</title>
 <style>
-body{background:linear-gradient(135deg,#06194e,#7ebbd3,#4c07c3);font-family:Arial;margin:20px;color:white;}
+body {
+            background: linear-gradient(135deg, #06194e, #2D83A6, #4c07c3);
+            background-size: 300% 300%;
+            animation: gradientMove 10s ease infinite;
+            font-family: 'Raleway', sans-serif;
+            color: #F0F0F2;
+            margin: 20px;
+        }
+
+        /* Background animation */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
 .navbar{background:#232760;padding:10px;border-radius:10px;margin-bottom:20px;}
 .navbar a{color:white;text-decoration:none;margin-right:10px;}
 </style>
@@ -16,6 +31,6 @@ body{background:linear-gradient(135deg,#06194e,#7ebbd3,#4c07c3);font-family:Aria
 <a href="designerdash.html">Designer Dashboard</a>
 </nav>
 <h1>Payment Canceled</h1>
-<p>payment was cancled.</p>
+<p>payment was not completed.</p>
 </body>
 </html>
