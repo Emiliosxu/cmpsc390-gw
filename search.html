@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+
+<style>
+body {
+    background: linear-gradient(135deg, #06194e, #2D83A6, #4c07c3);
+    color: white;
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1 class="text-center">Search Clothing</h1>
+
+<div class="container">
+    <input type="text" id="searchInput" class="form-control"
+        placeholder="Search (Casual, Formal, Work, Everyday)">
+</div>
+
+<div id="results" class="row mt-4"></div>
+
+<script>
+const input = document.getElementById("searchInput");
+
+input.addEventListener("keyup", function () {
+    let query = input.value;
+
+    fetch("search.php?q=" + query)
+        .then(res => res.json())
+        .then(data => {
+            let output = "";
+            data.forEach(item => {
+                output += `
+                    <div class="col-md-3">
+                        <div class="card">
+                            <img src="${item.image_url}" style="width:100%; height:150px; object-fit:cover;">
+                            <h5>${item.item_name}</h5>
+                            <p>Style: ${item.style}</p>
+                            <p>Use: ${item.occasion}</p>
+                            <p>$${item.price}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("results").innerHTML = output;
+        });
+});
+</script>
+
+</body>
+</html>
