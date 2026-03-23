@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #06194e, #2D83A6, #4c07c3);
+            background-size: 300% 300%;
+            animation: gradientMove 10s ease infinite;
+            color: #F0F0F2;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            background-color: rgb(35, 39, 96);
+            padding: 14px 24px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+
+        .navbar a {
+            color: #dce7ff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar a:hover { color: white; }
+
+        .page-container {
+            max-width: 800px;
+            margin: auto;
+            background: rgba(122, 157, 218, 0.35);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+        }
+
+        h1 { text-align: center; margin-bottom: 8px; font-size: 38px; }
+
+        .subtitle { text-align: center; margin-bottom: 30px; font-size: 18px; color: #e7efff; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .full-width { grid-column: 1 / 3; }
+
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .button-row {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button, .back-link {
+            background: #5577e6;
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        button:hover, .back-link:hover { opacity: 0.92; }
+
+        .secondary-btn { background: rgba(255,255,255,0.18); }
+
+        .message {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 12px;
+            display: none;
+            font-weight: 600;
+        }
+
+        .success {
+            background: rgba(60, 179, 113, 0.25);
+            border: 1px solid rgba(60, 179, 113, 0.5);
+        }
+
+        .error {
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid rgba(220, 20, 60, 0.45);
+        }
+
+        @media (max-width: 700px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="login.html">Login</a>
+        <a href="designerdash.html">Dashboard</a>
+    </div>
+
+    <div class="page-container">
+        <h1>Create Project</h1>
+        <p class="subtitle">Add a new clothing item to your designer dashboard</p>
+
+        <form id="projectForm">
+            <div class="form-grid">
+                <div>
+                    <label for="item_name">Item Name</label>
+                    <input type="text" id="item_name" required>
+                </div>
+
+                <div>
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Shirt">Shirt</option>
+                        <option value="Tops">Tops</option>
+                        <option value="Pants">Pants</option>
+                        <option value="Jacket">Jacket</option>
+                        <option value="Coat">Coat</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="style">Style</label>
+                    <select id="style" required>
+                        <option value="">Select Style</option>
+                        <option value="Casual">Casual</option>
+                        <option value="Formal">Formal</option>
+                        <option value="Streetwear">Streetwear</option>
+                        <option value="Minimal">Minimal</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="occasion">Occasion</label>
+                    <input type="text" id="occasion" placeholder="Ex: Casual, Work, Formal">
+                </div>
+
+                <div>
+                    <label for="price">Price</label>
+                    <input type="number" id="price" step="0.01" min="0" required>
+                </div>
+
+                <div>
+                    <label for="inventory">Inventory</label>
+                    <input type="number" id="inventory" min="0" required>
+                </div>
+
+                <div>
+                    <label for="size_range">Size Range</label>
+                    <input type="number" id="size_range" min="1" required>
+                </div>
+
+                <div>
+                    <label for="designer_id">Designer ID</label>
+                    <input type="number" id="designer_id" value="1" required>
+                </div>
+
+                <div class="full-width">
+                    <label for="image_url">Image URL / Image Name</label>
+                    <input type="text" id="image_url" placeholder="Ex: hoodie.jpg" required>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button type="submit">Create Project</button>
+                <button type="reset" class="secondary-btn">Clear Form</button>
+                <a href="designerdash.html" class="back-link secondary-btn">Back to Dashboard</a>
+            </div>
+        </form>
+
+        <div id="messageBox" class="message"></div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:3000";
+
+        const form = document.getElementById("projectForm");
+        const messageBox = document.getElementById("messageBox");
+
+        function showMessage(text, type) {
+            messageBox.style.display = "block";
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = text;
+        }
+
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const projectData = {
+                item_name: document.getElementById("item_name").value.trim(),
+                category: document.getElementById("category").value,
+                style: document.getElementById("style").value,
+                occasion: document.getElementById("occasion").value.trim(),
+                price: parseFloat(document.getElementById("price").value),
+                inventory: parseInt(document.getElementById("inventory").value),
+                size_range: parseInt(document.getElementById("size_range").value),
+                designer_id: parseInt(document.getElementById("designer_id").value),
+                image_url: document.getElementById("image_url").value.trim()
+            };
+
+            if (!projectData.category || !projectData.style) {
+                showMessage("Please select a category and style.", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/designer/projects`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(projectData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showMessage(`Success: ${data.message} (New Item ID: ${data.item_id})`, "success");
+                    form.reset();
+                    document.getElementById("designer_id").value = "1";
+                } else {
+                    showMessage(data.message || "Could not create project.", "error");
+                }
+            } catch (error) {
+                showMessage("Server connection failed. Make sure your server is running on port 3000.", "error");
+            }
+        });
+    </script>
+</body>
+</html>
