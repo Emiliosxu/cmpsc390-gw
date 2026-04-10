@@ -45,6 +45,28 @@ app.post("/login", (req, res) => {
     });
 });
 
+// SEARCH ROUTE (replaces search.php)
+app.get("/search", (req, res) => {
+    const q = req.query.q || "";
+
+    const sql = `
+        SELECT * FROM items
+        WHERE style LIKE ?
+        OR occasion LIKE ?
+    `;
+
+    const search = `%${q}%`;
+
+    db.query(sql, [search, search], (err, result) => {
+        if (err) {
+            res.status(500).json({ error: "database error" });
+            return;
+        }
+
+        res.json(result);
+    });
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
 });
