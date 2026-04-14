@@ -7,18 +7,18 @@ const session = require("express-session");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
+const path = require('path');
 
-// middleware
+app.use(express.static(__dirname));
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public")); // HTML file folder
 
 // Add session middleware with secret from .env
 app.use(session({
     secret: process.env.SESSION_SECRET || 'fallback-secret-do-not-use-in-production',
     resave: false,
     saveUninitialized: false,
-    cookie: { 
+    cookie: {
         secure: false,
         maxAge: 24 * 60 * 60 * 1000
     }
@@ -162,7 +162,7 @@ app.post("/create-checkout-session", (req, res) => {
             res.status(500).json({ error: error.message });
         }
     });
-    
+
 });
 
 // logout route
@@ -178,8 +178,8 @@ app.post("/logout", (req, res) => {
 // check session route
 app.get("/check-session", (req, res) => {
     if (req.session.userId) {
-        res.json({ 
-            loggedIn: true, 
+        res.json({
+            loggedIn: true,
             userId: req.session.userId,
             userName: req.session.userName,
             accountType: req.session.accountType || 'user'
@@ -197,18 +197,18 @@ app.get("/designer/analytics", (req, res) => {
 // LIKE feature
 app.post("/like-item", (req, res) => {
     if (!req.session.userId) {
-        return res.json({ 
-            success: false, 
+        return res.json({
+            success: false,
             error: "not_logged_in",
-            message: "Please log in to like items" 
+            message: "Please log in to like items"
         });
     }
 
     if (req.session.accountType === 'designer') {
-        return res.json({ 
-            success: false, 
+        return res.json({
+            success: false,
             error: "designer_not_allowed",
-            message: "Designers cannot like items" 
+            message: "Designers cannot like items"
         });
     }
 
@@ -227,26 +227,26 @@ app.post("/like-item", (req, res) => {
 
         if (result.length === 0) {
             const getMaxIdSql = `SELECT MAX(closet_id) as maxId FROM SAVED_CLOSET`;
-            
+
             db.query(getMaxIdSql, (err2, maxIdResult) => {
                 if (err2) {
                     console.error(err2);
                     return res.json({ success: false, error: "Could not create closet" });
                 }
-                
+
                 const newClosetId = (maxIdResult[0].maxId || 0) + 1;
-                
+
                 const createClosetSql = `
                     INSERT INTO SAVED_CLOSET (closet_id, user_id) 
                     VALUES (?, ?)
                 `;
-                
+
                 db.query(createClosetSql, [newClosetId, userId], (err3, insertResult) => {
                     if (err3) {
                         console.error(err3);
                         return res.json({ success: false, error: "Could not create closet" });
                     }
-                    
+
                     toggleLike(newClosetId, itemId, res);
                 });
             });
@@ -279,7 +279,7 @@ function toggleLike(closetId, itemId, res) {
                 }
                 return res.json({ success: true, liked: false });
             });
-        } 
+        }
         else {
             const insertSql = `
                 INSERT INTO SAVED_IN (closet_id, item_id)
@@ -299,16 +299,16 @@ function toggleLike(closetId, itemId, res) {
 //get liked Items
 app.get("/liked-items", (req, res) => {
     if (!req.session.userId) {
-        return res.json({ 
-            success: true, 
+        return res.json({
+            success: true,
             likedIds: [],
-            loggedIn: false 
+            loggedIn: false
         });
     }
 
     if (req.session.accountType === 'designer') {
-        return res.json({ 
-            success: true, 
+        return res.json({
+            success: true,
             likedIds: [],
             loggedIn: true,
             accountType: 'designer'
@@ -348,7 +348,7 @@ app.get("/users/max-id", (req, res) => {
 });
 
 // Get max designer ID
-app.get("/designers/max-id", (req, res) => {
+app.get("/designer/max-id", (req, res) => {
     const sql = `SELECT MAX(designer_id) as maxId FROM DESIGNER`;
     db.query(sql, (err, result) => {
         if (err) {
@@ -361,12 +361,12 @@ app.get("/designers/max-id", (req, res) => {
 // Register a new user
 app.post("/register-user", (req, res) => {
     const { user_id, user_name, user_email, body_type, subscription_type, user_password, height_in, weight_lb } = req.body;
-    
+
     const sql = `
         INSERT INTO USER (user_id, user_name, user_email, body_type, subscription_type, user_password, height_in, weight_lb)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    
+
     db.query(sql, [user_id, user_name, user_email, body_type, subscription_type, user_password, height_in, weight_lb], (err, result) => {
         if (err) {
             console.error("Registration error:", err);
@@ -379,12 +379,12 @@ app.post("/register-user", (req, res) => {
 // Register a new designer
 app.post("/register-designer", (req, res) => {
     const { designer_id, brand_name, brand_email, designer_password } = req.body;
-    
+
     const sql = `
         INSERT INTO DESIGNER (designer_id, brand_name, brand_email, designer_password)
         VALUES (?, ?, ?, ?)
     `;
-    
+
     db.query(sql, [designer_id, brand_name, brand_email, designer_password], (err, result) => {
         if (err) {
             console.error("Registration error:", err);
@@ -397,7 +397,7 @@ app.post("/register-designer", (req, res) => {
 // LOGIN ROUTE - Checks both USER and DESIGNER tables
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
-    
+
     console.log("=== LOGIN ATTEMPT ===");
     console.log("Email:", email);
 
@@ -413,15 +413,15 @@ app.post("/login", (req, res) => {
             console.error("User login error:", err);
             return res.status(500).json({ message: "Database error" });
         }
-        
+
         if (userResult && userResult.length > 0) {
             console.log("User found:", userResult[0].user_name);
             req.session.userId = userResult[0].user_id;
             req.session.userName = userResult[0].user_name;
             req.session.accountType = 'user';
-            
-            return res.json({ 
-                success: true, 
+
+            return res.json({
+                success: true,
                 message: "login successful",
                 userId: userResult[0].user_id,
                 userName: userResult[0].user_name,
@@ -441,15 +441,15 @@ app.post("/login", (req, res) => {
                 console.error("Designer login error:", err2);
                 return res.status(500).json({ message: "Database error" });
             }
-            
+
             if (designerResult && designerResult.length > 0) {
                 console.log("Designer found:", designerResult[0].user_name);
                 req.session.userId = designerResult[0].designer_id;
                 req.session.userName = designerResult[0].user_name;
                 req.session.accountType = 'designer';
-                
-                return res.json({ 
-                    success: true, 
+
+                return res.json({
+                    success: true,
                     message: "login successful",
                     userId: designerResult[0].designer_id,
                     userName: designerResult[0].user_name,
@@ -458,9 +458,9 @@ app.post("/login", (req, res) => {
             }
 
             console.log("No user or designer found with these credentials");
-            return res.json({ 
-                success: false, 
-                message: "Invalid email or password" 
+            return res.json({
+                success: false,
+                message: "Invalid email or password"
             });
         });
     });
@@ -469,7 +469,7 @@ app.post("/login", (req, res) => {
 // Designer Projects Routes
 app.get("/designer/projects/:designerId", (req, res) => {
     const designerId = req.params.designerId;
-    
+
     const sql = `
         SELECT item_id, item_name, category, style, occasion, price, 
                inventory, size_range, image_url, designer_id
@@ -477,54 +477,54 @@ app.get("/designer/projects/:designerId", (req, res) => {
         WHERE designer_id = ?
         ORDER BY item_id DESC
     `;
-    
+
     db.query(sql, [designerId], (err, results) => {
         if (err) {
             console.error("Error fetching designer projects:", err);
-            return res.status(500).json({ 
-                success: false, 
-                message: "Database error" 
+            return res.status(500).json({
+                success: false,
+                message: "Database error"
             });
         }
-        
+
         res.json(results);
     });
 });
 
 // CREATE a new listing (clothing item)
 app.post("/designer/projects", (req, res) => {
-    const { 
-        item_name, 
-        category, 
-        style, 
-        occasion, 
-        price, 
-        inventory, 
-        size_range, 
-        designer_id, 
-        image_url 
+    const {
+        item_name,
+        category,
+        style,
+        occasion,
+        price,
+        inventory,
+        size_range,
+        designer_id,
+        image_url
     } = req.body;
-    
+
     // First get the max item_id to generate a new one
     const getMaxIdSql = `SELECT MAX(item_id) as maxId FROM clothing_item`;
-    
+
     db.query(getMaxIdSql, (err, maxIdResult) => {
         if (err) {
             console.error("Error getting max ID:", err);
-            return res.status(500).json({ 
-                success: false, 
-                message: "Error generating item ID" 
+            return res.status(500).json({
+                success: false,
+                message: "Error generating item ID"
             });
         }
-        
+
         const newItemId = (maxIdResult[0].maxId || 0) + 1;
-        
+
         const sql = `
             INSERT INTO clothing_item 
             (item_id, item_name, category, style, occasion, price, inventory, size_range, designer_id, image_url) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        
+
         db.query(sql, [
             newItemId,
             item_name,
@@ -539,16 +539,16 @@ app.post("/designer/projects", (req, res) => {
         ], (err, result) => {
             if (err) {
                 console.error("Error creating project:", err);
-                return res.status(500).json({ 
-                    success: false, 
-                    message: "Error creating listing. " + err.message 
+                return res.status(500).json({
+                    success: false,
+                    message: "Error creating listing. " + err.message
                 });
             }
-            
-            res.json({ 
-                success: true, 
-                message: "Listing created successfully", 
-                item_id: newItemId 
+
+            res.json({
+                success: true,
+                message: "Listing created successfully",
+                item_id: newItemId
             });
         });
     });
@@ -557,48 +557,84 @@ app.post("/designer/projects", (req, res) => {
 // DELETE a listing (clothing item)
 app.delete("/designer/projects/:itemId", (req, res) => {
     const itemId = req.params.itemId;
-    
+
     const sql = `DELETE FROM clothing_item WHERE item_id = ?`;
-    
+
     db.query(sql, [itemId], (err, result) => {
         if (err) {
             console.error("Error deleting project:", err);
-            return res.status(500).json({ 
-                success: false, 
-                message: "Error deleting listing" 
+            return res.status(500).json({
+                success: false,
+                message: "Error deleting listing"
             });
         }
-        
+
         if (result.affectedRows === 0) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Listing not found" 
+            return res.status(404).json({
+                success: false,
+                message: "Listing not found"
             });
         }
-        
-        res.json({ 
-            success: true, 
-            message: "Listing deleted successfully" 
+
+        res.json({
+            success: true,
+            message: "Listing deleted successfully"
         });
     });
 });
 
 // Search designers by brand name or brand_email
-app.get("/designers/search", (req, res) => {
-    const { query } = req.query;
-
-    const sql = `
-        SELECT * FROM designer
-        WHERE brand_name LIKE ? OR brand_email = ?
-    `;
-
-    const likeQuery = `%${query}%`;
-
-    db.query(sql, [likeQuery, query], (err, results) => {
-        if (err) return res.status(500).send(err);
-        res.json(results);
-    });
+app.get("/designer/search", async (req, res) => {
+    const query = req.query.query;
+    try {
+        let sql = `SELECT designer_id, brand_name, brand_email FROM designer`;
+        let params = [];
+        if (query && query.trim() !== "") {
+            sql += ` WHERE brand_name LIKE ? OR brand_email LIKE ?`;
+            params.push(`%${query}%`, `%${query}%`);
+        }
+        const [rows] = await db.promise().query(sql, params);  // ← fix here too
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server error");
+    }
 });
+
+app.get("/designer/projects/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+        const [rows] = await db.promise().query(   // ← add .promise() and destructure
+            "SELECT * FROM projects WHERE designer_id = ?",
+            [id]
+        );
+        res.json(rows);   // ← send just rows, not the full result array
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+app.get("/designer/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const [rows] = await db.promise().query(
+            "SELECT designer_id, brand_name FROM designer WHERE designer_id = ?",
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Designer not found" });
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
