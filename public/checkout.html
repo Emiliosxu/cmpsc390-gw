@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STLYIX</title>
+<script src="https://js.stripe.com/v3/"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    @font-face {
+        src: url(fonts/YAGIZA__.TTF);
+        font-family: YAGIZA;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #0a0a0a;
+        font-family: 'Space Mono', 'Share Tech Mono', monospace;
+        color: #ffffff;
+        margin: 0;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    /* Grid Background - Fixed to go under content */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* CRT Screen Effect */
+    .crt-effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+    }
+
+    /* Navigation - Retro Digital */
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 40px;
+        z-index: 1000;
+        border-bottom: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .navbar-left .logo {
+        font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-decoration: none;
+        letter-spacing: 4px;
+        text-shadow: 0 0 5px #ffffff;
+    }
+
+    .navbar-left .logo span {
+        color: #ff00ff;
+        text-shadow: 0 0 5px #ff00ff;
+    }
+
+    .navbar-left a, .navbar-right a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .navbar-left a::before, .navbar-right a::before {
+        content: '>';
+        position: absolute;
+        left: -12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .navbar-left a:hover::before, .navbar-right a:hover::before {
+        opacity: 1;
+    }
+
+    .navbar-left a:hover, .navbar-right a:hover {
+        color: #ff00ff;
+        padding-left: 8px;
+    }
+
+    .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    /* Search Container - Retro */
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        padding: 5px 5px 5px 15px;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-icon {
+        color: #ffffff;
+        font-size: 0.9rem;
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        padding: 8px 10px;
+        color: #ffffff;
+        font-size: 0.85rem;
+        width: 180px;
+        outline: none;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-action-btn {
+        background: #ffffff;
+        border: none;
+        color: #0a0a0a;
+        padding: 6px 16px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .search-action-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    /* Dropdown - Retro */
+    .user-dropdown {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .greeting-text {
+        color: #ffffff;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        font-size: 0.85rem;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 10px;
+        background: #0a0a0a;
+        min-width: 140px;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #ffffff;
+        padding: 12px 20px;
+        display: block;
+        font-size: 0.8rem;
+    }
+
+    .dropdown-content a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ff00ff;
+    }
+
+    .user-dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    #cart-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    #checkout-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+        max-width: 1200px;
+        margin: 100px auto 40px;
+        padding: 0 40px;
+        position: relative;
+        z-index: 1;
+        flex-wrap: wrap;
+    }
+
+    #left-section {
+        flex: 1;
+        min-width: 300px;
+        background: rgba(10, 10, 10, 0.9);
+        border: 1px solid #ffffff;
+        padding: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    #left-section:hover {
+        border-color: #ff00ff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        transform: translateY(-5px);
+    }
+
+    #left-section h2 {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 1.8rem;
+        color: #ff00ff;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+    }
+
+    #left-section p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+    }
+
+    #items-section {
+        flex: 1.5;
+        min-width: 400px;
+        background: rgba(10, 10, 10, 0.9);
+        border: 1px solid #ffffff;
+        padding: 30px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    #items-section:hover {
+        border-color: #ff00ff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+    }
+
+    #stylx-title {
+        font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ffffff;
+        letter-spacing: 4px;
+        text-shadow: 0 0 5px #ffffff;
+        margin-bottom: 10px;
+    }
+
+    #stylx-title span {
+        color: #ff00ff;
+    }
+
+    #checkout-header {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ffffff;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 2px;
+        color: #ff00ff;
+    }
+
+    .item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .item:hover {
+        border-color: #ff00ff;
+        transform: translateX(5px);
+    }
+
+    .item-image {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        margin-right: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .item-details {
+        flex-grow: 1;
+    }
+
+    .item-details strong {
+        font-size: 0.9rem;
+        font-family: 'Space Mono', monospace;
+        letter-spacing: 1px;
+    }
+
+    .item-details span {
+        color: #ff00ff;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .item-details small {
+        color: rgba(255,255,255,0.6);
+        font-size: 0.7rem;
+    }
+
+    .total-price {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid #ff00ff;
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-align: right;
+        font-family: 'Space Mono', monospace;
+        color: #ff00ff;
+    }
+
+    .btn-pay {
+        width: 100%;
+        padding: 14px;
+        background: transparent;
+        border: 1px solid #ffffff;
+        color: #ffffff;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .btn-pay:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        border-color: #ff00ff;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .btn-pay:disabled {
+        background: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.3);
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 60px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .empty-cart p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+        color: rgba(255,255,255,0.8);
+    }
+
+    .empty-cart a, .empty-cart button {
+        display: inline-block;
+        padding: 12px 30px;
+        background: transparent;
+        border: 1px solid #ffffff;
+        color: #ffffff;
+        text-decoration: none;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .empty-cart a:hover, .empty-cart button:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        border-color: #ff00ff;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 60px;
+        font-size: 1rem;
+        color: #ff00ff;
+        font-family: 'Share Tech Mono', monospace;
+    }
+
+    .debug-info {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        color: #ff00ff;
+        display: none;
+        font-family: 'Space Mono', monospace;
+    }
+
+    @media(max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px 20px;
+        }
+        .navbar-left, .navbar-right {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .search-container {
+            width: 100%;
+        }
+        .search-input {
+            flex-grow: 1;
+            width: auto;
+        }
+        #checkout-container {
+            margin-top: 140px;
+            padding: 0 20px;
+            flex-direction: column;
+        }
+        #left-section, #items-section {
+            min-width: auto;
+            width: 100%;
+        }
+        #stylx-title {
+            font-size: 1.5rem;
+        }
+        .item-image {
+            width: 50px;
+            height: 50px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="crt-effect"></div>
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="/" class="logo">STLYIX</a>
+        <a href="/">HOME</a>
+        <a href="/shoptest.html">SHOP</a>
+        <a href="/aboutus.html">ABOUT</a>
+        <a href="/contact.html">CONTACT</a>
+        <a href="/userdash.html" id="my-closet-link" style="display: none;">USERDASH</a>
+    </div>
+    <div class="navbar-right">
+        <a href="checkout.html" id="cart-btn"><i class="fas fa-shopping-cart"></i> [CART]</a>
+        <div class="search-container">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="search-input" placeholder="SEARCH...">
+            <button id="searchActionBtn" class="search-action-btn" onclick="performSearch()">[GO]</button>
+        </div>
+        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+            <span class="greeting-text" id="user-greeting">Hello, USER</span>
+            <div class="dropdown-content">
+                <a href="#" id="logout-link">[LOGOUT]</a>
+            </div>
+        </div>
+        <a href="/login.html" id="login-link">LOGIN</a>
+        <a href="/register.html" id="register-link">[SIGNUP]</a>
+    </div>
+</nav>
+
+<div id="checkout-container">
+    <div id="left-section">
+        <div>
+            <h2>YOUR CLOSET UPGRADE!</h2>
+            <p>Review and complete your purchase to get your items delivered to your doorstep!</p>
+        </div>
+    </div>
+
+    <div id="items-section">
+        <div id="stylx-title">STLYIX</div>
+        <div id="checkout-header">CHECKOUT </div>
+    
+        <div id="debug-info" class="debug-info"></div>
+        
+        <div id="items-list">
+            <div class="loading">> LOADING CART DATA...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// stripe public key
+const stripePublicKey = 'pk_test_51T71NELl3DkYMLqeTi6Bm164r3frBmAIlSdZ3MJswFTg2nnpNE4lfg9zQiKfEEjIuwdRPlthmgh1fOCrSBxlTOwa00qofvcZbZ';
+
+// Search functionality
+const searchInput = document.getElementById("searchInput");
+function performSearch() {
+    const query = searchInput.value;
+    if (query && query.trim() !== "") {
+        window.location.href = `/shoptest.html?search=${encodeURIComponent(query)}`;
+    }
+}
+searchInput?.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        performSearch();
+    }
+});
+
+function debug(message) {
+    console.log("DEBUG:", message);
+    const debugEl = document.getElementById('debug-info');
+    if (debugEl) {
+        debugEl.innerHTML += `<div>> ${new Date().toLocaleTimeString()}: ${message}</div>`;
+    }
+}
+
+async function checkLoginStatus() {
+    try {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        
+        if (data.loggedIn) {
+            document.getElementById("login-link").style.display = "none";
+            document.getElementById("register-link").style.display = "none";
+            document.getElementById("my-closet-link").style.display = "inline";
+            document.getElementById("user-dropdown").style.display = "inline-block";
+            document.getElementById("user-greeting").textContent = `Hello, ${data.userName.toUpperCase()}`;
+        } else {
+            document.getElementById("login-link").style.display = "inline";
+            document.getElementById("register-link").style.display = "inline";
+            document.getElementById("my-closet-link").style.display = "none";
+            document.getElementById("user-dropdown").style.display = "none";
+        }
+    } catch (error) {
+        console.error("Error checking login status:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutLink = document.getElementById("logout-link");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+                const res = await fetch("/logout", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+    }
+});
+
+async function loadCartItems() {
+    debug("Loading cart items...");
+    
+    const cartRaw = localStorage.getItem("cart");
+    debug(`Raw cart data: ${cartRaw}`);
+    
+    let cart = [];
+    try {
+        cart = JSON.parse(cartRaw) || [];
+    } catch (e) {
+        debug(`Error parsing cart: ${e.message}`);
+        cart = [];
+    }
+    
+    debug(`Parsed cart array: ${JSON.stringify(cart)}`);
+    debug(`Cart length: ${cart.length}`);
+    
+    const itemsList = document.getElementById("items-list");
+    
+    if (cart.length === 0) {
+        debug("Cart is empty, showing empty message");
+        itemsList.innerHTML = `
+            <div class="empty-cart">
+                <p> Cart empty </p>
+                <a href="shoptest.html"[ Continue shopping ]</a>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        debug(`Fetching cart items from server for IDs: ${JSON.stringify(cart)}`);
+        
+        const response = await fetch("/get-cart-items", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cart })
+        });
+
+        debug(`Server response status: ${response.status}`);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            debug(`Error response: ${errorText}`);
+            throw new Error(`Failed to fetch cart items: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        debug(`Server returned items: ${JSON.stringify(data)}`);
+        
+        itemsList.innerHTML = "";
+        
+        if (!data.items || data.items.length === 0) {
+            debug("No items found from server");
+            itemsList.innerHTML = `
+                <div class="empty-cart">
+                    <p> No items found</p>
+                    <a href="shoptest.html"[ Continue shopping ]</a>
+                </div>
+            `;
+            return;
+        }
+        
+        debug(`Displaying ${data.items.length} items`);
+        
+        let totalPrice = 0;
+        
+        data.items.forEach((item, index) => {
+            debug(`Item ${index}: ${item.item_name} - $${item.price}`);
+            
+            const div = document.createElement("div");
+            div.classList.add("item");
+            div.innerHTML = `
+                <img src="${item.image_url || 'https://via.placeholder.com/70'}" class="item-image" alt="${item.item_name}" onerror="this.src='https://via.placeholder.com/70'">
+                <div class="item-details">
+                    <strong>${item.item_name.toUpperCase()}</strong><br>
+                    <span>$${parseFloat(item.price).toFixed(2)}</span>
+                    ${item.brand_name ? `<br><small>[${item.brand_name.toUpperCase()}]</small>` : ''}
+                </div>
+            `;
+            itemsList.appendChild(div);
+            totalPrice += parseFloat(item.price);
+        });
+        
+        debug(`Total price: $${totalPrice.toFixed(2)}`);
+        
+        const totalDiv = document.createElement("div");
+        totalDiv.classList.add("total-price");
+        totalDiv.innerHTML = `TOTAL: $${totalPrice.toFixed(2)}`;
+        itemsList.appendChild(totalDiv);
+        
+        const button = document.createElement("button");
+        button.classList.add("btn-pay");
+        button.textContent = "[ PROCEED TO PAYMENT ]";
+        button.onclick = async () => {
+            button.disabled = true;
+            button.textContent = "[ PROCESSING... ]";
+            
+            try {
+                debug("Creating Stripe checkout session...");
+                const stripe = Stripe(stripePublicKey);
+                
+                const sessionResponse = await fetch("/create-checkout-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cart })
+                });
+                
+                debug(`Session response status: ${sessionResponse.status}`);
+                
+                if (!sessionResponse.ok) {
+                    const errorText = await sessionResponse.text();
+                    debug(`Session error: ${errorText}`);
+                    throw new Error("Failed to create checkout session");
+                }
+                
+                const sessionData = await sessionResponse.json();
+                debug(`Session created: ${sessionData.sessionId}`);
+                
+                const { error } = await stripe.redirectToCheckout({ 
+                    sessionId: sessionData.sessionId 
+                });
+                
+                if (error) {
+                    debug(`Stripe redirect error: ${error.message}`);
+                    alert(error.message);
+                    button.disabled = false;
+                    button.textContent = "[ PROCEED TO PAYMENT ]";
+                }
+            } catch (error) {
+                debug(`Checkout error: ${error.message}`);
+                console.error("Checkout error:", error);
+                alert("Error processing checkout: " + error.message);
+                button.disabled = false;
+                button.textContent = "[ PROCEED TO PAYMENT ]";
+            }
+        };
+        itemsList.appendChild(button);
+
+    } catch (err) {
+        debug(`Error loading cart: ${err.message}`);
+        console.error("Error loading cart:", err);
+        itemsList.innerHTML = `
+            <div class="empty-cart">
+                <p>Eroor loading cart</p>
+                <button onclick="loadCartItems()"[ Retry ]</button>
+                <br>
+                <a href="shoptest.html" style="display:inline-block; margin-top:15px;"[ Continue shopping]</a>
+            </div>
+        `;
+    }
+}
+
+debug("Page loaded, starting cart load");
+loadCartItems();
+checkLoginStatus();
+
+window.addEventListener("storage", (event) => {
+    debug(`Storage event detected: ${event.key} changed`);
+    if (event.key === "cart") {
+        debug("Cart changed in another tab, reloading...");
+        loadCartItems();
+    }
+});
+
+window.addEventListener("cart-updated", () => {
+    debug("Cart updated in this tab, reloading...");
+    loadCartItems();
+});
+
+window.testAddToCart = function(id) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    debug(`Test: Added item ${id} to cart`);
+    loadCartItems();
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STLYIX // MESSAGES</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face { src: url(fonts/YAGIZA__.TTF); font-family: YAGIZA; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Space Mono', 'Share Tech Mono', monospace;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .crt-effect {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            z-index: 1000;
+            border-bottom: 1px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+
+        .navbar-left { display: flex; align-items: center; gap: 30px; }
+
+        .navbar-left .logo {
+            font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 4px;
+            text-shadow: 0 0 5px #ffffff;
+        }
+
+        .navbar-left a, .navbar-right a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .navbar-left a:hover, .navbar-right a:hover { color: #ff00ff; padding-left: 8px; }
+        .navbar-right { display: flex; align-items: center; gap: 25px; }
+
+        .user-dropdown { position: relative; display: inline-block; cursor: pointer; }
+
+        .greeting-text {
+            color: #ffffff;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #ffffff;
+            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0; top: 100%;
+            margin-top: 10px;
+            background: #0a0a0a;
+            min-width: 140px;
+            border: 1px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .dropdown-content a { color: #ffffff; padding: 12px 20px; display: block; font-size: 0.8rem; }
+        .dropdown-content a:hover { background: rgba(255,255,255,0.2); color: #ff00ff; }
+        .user-dropdown:hover .dropdown-content { display: block; }
+
+        .page-header {
+            text-align: center;
+            margin: 100px 0 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .page-header .accent-line {
+            width: 80px;
+            height: 2px;
+            background: #ff00ff;
+            margin: 15px auto 0;
+            box-shadow: 0 0 5px #ff00ff;
+        }
+
+        .messages-wrapper {
+            display: flex;
+            gap: 0;
+            padding: 0 40px 60px;
+            position: relative;
+            z-index: 1;
+            height: calc(100vh - 200px);
+        }
+
+        .inbox-panel {
+            width: 320px;
+            flex-shrink: 0;
+            border: 1px solid #ffffff;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10,10,10,0.95);
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        .inbox-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inbox-title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            color: #ff00ff;
+            letter-spacing: 2px;
+        }
+
+        .new-msg-btn {
+            background: transparent;
+            border: 1px solid #ff00ff;
+            color: #ff00ff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .new-msg-btn:hover { background: #ff00ff; color: #0a0a0a; box-shadow: 0 0 10px #ff00ff; }
+
+        .inbox-search {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .inbox-search input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            padding: 6px 0;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .inbox-search input:focus { border-bottom-color: #ff00ff; }
+        .inbox-search input::placeholder { color: rgba(255,255,255,0.3); }
+
+        .inbox-list { flex: 1; overflow-y: auto; }
+        .inbox-list::-webkit-scrollbar { width: 4px; }
+        .inbox-list::-webkit-scrollbar-track { background: #0a0a0a; }
+        .inbox-list::-webkit-scrollbar-thumb { background: #ff00ff; }
+
+        .inbox-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .inbox-item:hover { background: rgba(255,255,255,0.05); }
+        .inbox-item.active { background: rgba(255,0,255,0.08); border-left: 2px solid #ff00ff; }
+        .inbox-item.unread .inbox-sender { color: #ff00ff; }
+
+        .inbox-item.unread::after {
+            content: '';
+            position: absolute;
+            right: 15px; top: 50%;
+            transform: translateY(-50%);
+            width: 6px; height: 6px;
+            background: #ff00ff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #ff00ff;
+        }
+
+        .inbox-sender {
+            font-size: 0.8rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: #ffffff;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .inbox-preview {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.4);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .inbox-time { font-size: 0.6rem; color: rgba(255,255,255,0.3); margin-top: 4px; }
+
+        .inbox-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.75rem;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            line-height: 2;
+        }
+
+        .chat-panel {
+            flex: 1;
+            border: 1px solid #ffffff;
+            border-left: none;
+            display: flex;
+            flex-direction: column;
+            background: rgba(10,10,10,0.9);
+        }
+
+        .chat-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-with {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: #ff00ff;
+            letter-spacing: 2px;
+        }
+
+        .chat-role-badge {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            letter-spacing: 1px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-track { background: #0a0a0a; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #ff00ff; }
+
+        .chat-no-select {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.2);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            gap: 10px;
+        }
+
+        .chat-no-select i { font-size: 2rem; color: rgba(255,0,255,0.2); }
+
+        .chat-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.2);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            gap: 10px;
+        }
+
+        .chat-empty i { font-size: 2rem; color: rgba(255,0,255,0.2); }
+
+        .msg-bubble { max-width: 65%; display: flex; flex-direction: column; gap: 4px; }
+        .msg-bubble.sent { align-self: flex-end; align-items: flex-end; }
+        .msg-bubble.received { align-self: flex-start; align-items: flex-start; }
+
+        .msg-text {
+            padding: 12px 16px;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .msg-bubble.sent .msg-text {
+            background: rgba(255,0,255,0.12);
+            border: 1px solid rgba(255,0,255,0.4);
+            color: #ffffff;
+        }
+
+        .msg-bubble.received .msg-text {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #ffffff;
+        }
+
+        .msg-time { font-size: 0.6rem; color: rgba(255,255,255,0.3); font-family: 'Share Tech Mono', monospace; }
+
+        /* DELETE BUTTON - only shows on hover */
+        .msg-delete-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,0,0,0.4);
+            font-size: 0.6rem;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            padding: 0;
+            transition: color 0.3s;
+            display: none;
+            margin-left: 8px;
+        }
+
+        .msg-bubble:hover .msg-delete-btn { display: inline-block; }
+        .msg-delete-btn:hover { color: #ff4444; }
+
+        .chat-input-area {
+            padding: 20px 25px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input-area textarea {
+            flex: 1;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            padding: 12px 15px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s;
+            height: 50px;
+        }
+
+        .chat-input-area textarea:focus { border-color: #ff00ff; }
+        .chat-input-area textarea::placeholder { color: rgba(255,255,255,0.3); }
+
+        .send-btn {
+            background: transparent;
+            border: 1px solid #ff00ff;
+            color: #ff00ff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+            height: 50px;
+        }
+
+        .send-btn:hover { background: #ff00ff; color: #0a0a0a; box-shadow: 0 0 10px #ff00ff; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: #0a0a0a;
+            border: 1px solid #ffffff;
+            box-shadow: 0 0 30px rgba(255,0,255,0.2);
+            padding: 30px;
+            width: 440px;
+            position: relative;
+        }
+
+        .modal-title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: #ff00ff;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover { color: #ff00ff; }
+
+        .modal-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .modal-select, .modal-textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 18px;
+        }
+
+        .modal-select:focus, .modal-textarea:focus { border-color: #ff00ff; }
+        .modal-select option { background: #0a0a0a; }
+        .modal-textarea { resize: none; height: 100px; }
+
+        .modal-send-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #ff00ff;
+            color: #ff00ff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            padding: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .modal-send-btn:hover { background: #ff00ff; color: #0a0a0a; box-shadow: 0 0 15px #ff00ff; }
+
+        .modal-error {
+            font-size: 0.7rem;
+            color: #ff4444;
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        @media(max-width: 900px) {
+            .messages-wrapper { flex-direction: column; height: auto; padding: 0 20px 60px; }
+            .inbox-panel { width: 100%; height: 300px; }
+            .chat-panel { height: 500px; }
+            .navbar { flex-direction: column; gap: 12px; padding: 12px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="crt-effect"></div>
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="/" class="logo">STYLIX</a>
+        <a href="/">HOME</a>
+        <a href="/shoptest.html">SHOP</a>
+        <a href="/aboutus.html">ABOUT</a>
+        <a href="/contact.html">CONTACT</a>
+    </div>
+    <div class="navbar-right">
+        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+            <span class="greeting-text" id="user-greeting">USER</span>
+            <div class="dropdown-content">
+                <a href="#" id="logout-link">[LOGOUT]</a>
+            </div>
+        </div>
+        <a href="/login.html" id="login-link">[LOGIN]</a>
+    </div>
+</nav>
+
+<div class="page-header">
+    <h1>MESSAGES</h1>
+    <div class="accent-line"></div>
+</div>
+
+<div class="messages-wrapper">
+    <div class="inbox-panel">
+        <div class="inbox-header">
+            <div class="inbox-title">INBOX</div>
+            <button class="new-msg-btn" onclick="openNewMessageModal()">[ + NEW ]</button>
+        </div>
+        <div class="inbox-search">
+            <input type="text" id="inboxSearch" placeholder="SEARCH CONVERSATIONS..." oninput="filterInbox()">
+        </div>
+        <div class="inbox-list" id="inboxList">
+            <div class="inbox-empty">> LOADING...</div>
+        </div>
+    </div>
+
+    <div class="chat-panel">
+        <div class="chat-no-select" id="noSelectMsg">
+            <i class="fas fa-comment-slash"></i>
+            <span>> SELECT A CONVERSATION</span>
+        </div>
+        <div id="chatHeader" class="chat-header" style="display:none;">
+            <div class="chat-with" id="chatWithName"></div>
+            <div class="chat-role-badge" id="chatWithRole"></div>
+        </div>
+        <div class="chat-messages" id="chatMessages" style="display:none;"></div>
+        <div class="chat-input-area" id="chatInputArea" style="display:none;">
+            <textarea id="messageInput" placeholder="TYPE A MESSAGE..." onkeydown="handleEnter(event)"></textarea>
+            <button class="send-btn" onclick="sendMessage()">[ SEND ]</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="newMsgModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeNewMessageModal()"><i class="fas fa-times"></i></button>
+        <div class="modal-title">> NEW MESSAGE</div>
+        <label class="modal-label">SELECT RECIPIENT TYPE</label>
+        <select class="modal-select" id="recipientType" onchange="loadRecipients()">
+            <option value="">-- SELECT --</option>
+            <option value="designer">DESIGNER</option>
+            <option value="user">USER</option>
+        </select>
+        <label class="modal-label">SELECT RECIPIENT</label>
+        <select class="modal-select" id="recipientSelect">
+            <option value="">-- SELECT TYPE FIRST --</option>
+        </select>
+        <label class="modal-label">MESSAGE</label>
+        <textarea class="modal-textarea" id="newMsgText" placeholder="TYPE YOUR MESSAGE..."></textarea>
+        <div class="modal-error" id="modalError"></div>
+        <button class="modal-send-btn" onclick="sendNewMessage()">[ SEND MESSAGE ]</button>
+    </div>
+</div>
+
+<script>
+let currentUser = null;
+let activeConversation = null;
+let allInboxItems = [];
+let pollInterval = null;
+
+async function checkLoginStatus() {
+    try {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        if (data.loggedIn) {
+            currentUser = data;
+            document.getElementById("login-link").style.display = "none";
+            document.getElementById("user-dropdown").style.display = "inline-block";
+            document.getElementById("user-greeting").textContent =
+                `${data.accountType === 'designer' ? 'DESIGNER' : 'USER'}, ${data.userName.toUpperCase()}`;
+            loadInbox();
+            pollInterval = setInterval(loadInbox, 10000);
+        } else {
+            window.location.href = "/login.html";
+        }
+    } catch (e) {
+        window.location.href = "/login.html";
+    }
+}
+
+async function loadInbox() {
+    try {
+        const res = await fetch("/messages/inbox");
+        const data = await res.json();
+        if (!data.success) {
+            document.getElementById("inboxList").innerHTML = '<div class="inbox-empty">> ERROR LOADING INBOX</div>';
+            return;
+        }
+        allInboxItems = data.conversations;
+        renderInbox(allInboxItems);
+    } catch (e) {
+        document.getElementById("inboxList").innerHTML = '<div class="inbox-empty">> SERVER ERROR</div>';
+    }
+}
+
+function renderInbox(items) {
+    const list = document.getElementById("inboxList");
+    if (items.length === 0) {
+        list.innerHTML = '<div class="inbox-empty">> NO MESSAGES YET<br><br>CLICK [ + NEW ] TO START</div>';
+        return;
+    }
+    list.innerHTML = items.map(conv => `
+        <div class="inbox-item ${conv.unread_count > 0 ? 'unread' : ''} ${activeConversation && activeConversation.other_id === conv.other_id && activeConversation.other_type === conv.other_type ? 'active' : ''}"
+             onclick="openConversation(${conv.other_id}, '${conv.other_type}', '${conv.other_name}')">
+            <div class="inbox-sender">${conv.other_name.toUpperCase()} <span style="font-size:0.6rem; color:rgba(255,255,255,0.3);">[${conv.other_type.toUpperCase()}]</span></div>
+            <div class="inbox-preview">${conv.last_message}</div>
+            <div class="inbox-time">${formatTime(conv.last_time)}</div>
+        </div>
+    `).join("");
+}
+
+function filterInbox() {
+    const q = document.getElementById("inboxSearch").value.toLowerCase();
+    renderInbox(allInboxItems.filter(c => c.other_name.toLowerCase().includes(q)));
+}
+
+async function openConversation(otherId, otherType, otherName) {
+    activeConversation = { other_id: otherId, other_type: otherType, other_name: otherName };
+    document.getElementById("noSelectMsg").style.display = "none";
+    document.getElementById("chatHeader").style.display = "flex";
+    document.getElementById("chatMessages").style.display = "flex";
+    document.getElementById("chatInputArea").style.display = "flex";
+    document.getElementById("chatWithName").textContent = otherName.toUpperCase();
+    document.getElementById("chatWithRole").textContent = `[${otherType.toUpperCase()}]`;
+
+    await fetch("/messages/mark-read", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sender_id: otherId, sender_type: otherType })
+    });
+
+    await loadMessages(otherId, otherType);
+    renderInbox(allInboxItems);
+}
+
+async function loadMessages(otherId, otherType) {
+    try {
+        const res = await fetch(`/messages/conversation?other_id=${otherId}&other_type=${otherType}`);
+        const data = await res.json();
+        if (!data.success) return;
+
+        const container = document.getElementById("chatMessages");
+        if (data.messages.length === 0) {
+            container.innerHTML = `<div class="chat-empty"><i class="fas fa-comment"></i><span>> START THE CONVERSATION</span></div>`;
+            return;
+        }
+
+        container.innerHTML = data.messages.map(msg => {
+            const isSent = msg.sender_id === currentUser.userId && msg.sender_type === currentUser.accountType;
+            return `
+                <div class="msg-bubble ${isSent ? 'sent' : 'received'}">
+                    <div class="msg-text">${escapeHtml(msg.message_text)}</div>
+                    <div class="msg-time">
+                        ${formatTime(msg.sent_at)}
+                        ${isSent ? `<button class="msg-delete-btn" onclick="deleteMessage(${msg.message_id})">[ DELETE ]</button>` : ''}
+                    </div>
+                </div>`;
+        }).join("");
+
+        container.scrollTop = container.scrollHeight;
+    } catch (e) {
+        console.error("Error loading messages:", e);
+    }
+}
+
+async function sendMessage() {
+    if (!activeConversation) return;
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+
+    try {
+        const res = await fetch("/messages/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                receiver_id: activeConversation.other_id,
+                receiver_type: activeConversation.other_type,
+                message_text: text
+            })
+        });
+        const data = await res.json();
+        if (data.success) {
+            await loadMessages(activeConversation.other_id, activeConversation.other_type);
+            await loadInbox();
+        }
+    } catch (e) {
+        console.error("Send error:", e);
+    }
+}
+
+async function deleteMessage(messageId) {
+    if (!confirm("Delete this message?")) return;
+    try {
+        const res = await fetch(`/messages/delete/${messageId}`, { method: "DELETE" });
+        const data = await res.json();
+        if (data.success) {
+            await loadMessages(activeConversation.other_id, activeConversation.other_type);
+            await loadInbox();
+        }
+    } catch (e) {
+        console.error("Delete error:", e);
+    }
+}
+
+function handleEnter(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+}
+
+function openNewMessageModal() {
+    document.getElementById("newMsgModal").classList.add("active");
+    document.getElementById("recipientType").value = "";
+    document.getElementById("recipientSelect").innerHTML = "<option value=''>-- SELECT TYPE FIRST --</option>";
+    document.getElementById("newMsgText").value = "";
+    document.getElementById("modalError").style.display = "none";
+}
+
+function closeNewMessageModal() {
+    document.getElementById("newMsgModal").classList.remove("active");
+}
+
+async function loadRecipients() {
+    const type = document.getElementById("recipientType").value;
+    const select = document.getElementById("recipientSelect");
+    if (!type) { select.innerHTML = "<option value=''>-- SELECT TYPE FIRST --</option>"; return; }
+    select.innerHTML = "<option value=''>LOADING...</option>";
+    try {
+        const res = await fetch(`/messages/recipients?type=${type}`);
+        const data = await res.json();
+        if (!data.success || data.recipients.length === 0) {
+            select.innerHTML = "<option value=''>NO RECIPIENTS FOUND</option>";
+            return;
+        }
+        select.innerHTML = "<option value=''>-- SELECT --</option>" +
+            data.recipients.map(r => `<option value="${r.id}">${r.name.toUpperCase()}</option>`).join("");
+    } catch (e) {
+        select.innerHTML = "<option value=''>ERROR LOADING</option>";
+    }
+}
+
+async function sendNewMessage() {
+    const receiverType = document.getElementById("recipientType").value;
+    const receiverId = document.getElementById("recipientSelect").value;
+    const text = document.getElementById("newMsgText").value.trim();
+    const errorEl = document.getElementById("modalError");
+
+    if (!receiverType || !receiverId || !text) {
+        errorEl.style.display = "block";
+        errorEl.textContent = "> PLEASE FILL IN ALL FIELDS";
+        return;
+    }
+
+    try {
+        const res = await fetch("/messages/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ receiver_id: parseInt(receiverId), receiver_type: receiverType, message_text: text })
+        });
+        const data = await res.json();
+        if (data.success) {
+            const recipientName = document.getElementById("recipientSelect").selectedOptions[0].text;
+            closeNewMessageModal();
+            await loadInbox();
+            openConversation(parseInt(receiverId), receiverType, recipientName);
+        } else {
+            errorEl.style.display = "block";
+            errorEl.textContent = `> ${data.message || "SEND FAILED"}`;
+        }
+    } catch (e) {
+        errorEl.style.display = "block";
+        errorEl.textContent = "> SERVER ERROR";
+    }
+}
+
+function formatTime(timestamp) {
+    if (!timestamp) return "";
+    const d = new Date(timestamp);
+    const diff = Date.now() - d;
+    const mins = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    if (mins < 1) return "JUST NOW";
+    if (mins < 60) return `${mins}M AGO`;
+    if (hours < 24) return `${hours}H AGO`;
+    if (days < 7) return `${days}D AGO`;
+    return d.toLocaleDateString();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+}
+
+document.getElementById("logout-link")?.addEventListener("click", async function(e) {
+    e.preventDefault();
+    clearInterval(pollInterval);
+    const res = await fetch("/logout", { method: "POST" });
+    const data = await res.json();
+    if (data.success) window.location.href = "/";
+});
+
+document.getElementById("newMsgModal").addEventListener("click", function(e) {
+    if (e.target === this) closeNewMessageModal();
+});
+
+checkLoginStatus();
+</script>
+</body>
+</html>
