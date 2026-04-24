@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STYLIX // REGISTER</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    @font-face {
+        src: url(fonts/YAGIZA__.TTF);
+        font-family: YAGIZA;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #0a0a0a;
+        font-family: 'Space Mono', 'Share Tech Mono', monospace;
+        color: #ffffff;
+        margin: 0;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .crt-effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 40px;
+        z-index: 1000;
+        border-bottom: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .navbar-left .logo {
+        font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-decoration: none;
+        letter-spacing: 4px;
+        text-shadow: 0 0 5px #ffffff;
+    }
+
+    .navbar-left .logo span {
+        color: #ff00ff;
+        text-shadow: 0 0 5px #ff00ff;
+    }
+
+    .navbar-left a, .navbar-right a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .navbar-left a::before, .navbar-right a::before {
+        content: '>';
+        position: absolute;
+        left: -12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .navbar-left a:hover::before, .navbar-right a:hover::before {
+        opacity: 1;
+    }
+
+    .navbar-left a:hover, .navbar-right a:hover {
+        color: #ff00ff;
+        padding-left: 8px;
+    }
+
+    .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        padding: 5px 5px 5px 15px;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-icon {
+        color: #ffffff;
+        font-size: 0.9rem;
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        padding: 8px 10px;
+        color: #ffffff;
+        font-size: 0.85rem;
+        width: 180px;
+        outline: none;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-action-btn {
+        background: #ffffff;
+        border: none;
+        color: #0a0a0a;
+        padding: 6px 16px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .search-action-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .user-dropdown {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .greeting-text {
+        color: #ffffff;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        font-size: 0.85rem;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 10px;
+        background: #0a0a0a;
+        min-width: 140px;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #ffffff;
+        padding: 12px 20px;
+        display: block;
+        font-size: 0.8rem;
+    }
+
+    .dropdown-content a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ff00ff;
+    }
+
+    .user-dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    #cart-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .page-header {
+        text-align: center;
+        margin: 100px 0 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 400;
+        color: #ffffff;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+    }
+
+    .page-header .accent-line {
+        width: 80px;
+        height: 2px;
+        background: #ff00ff;
+        margin: 15px auto 0;
+        box-shadow: 0 0 5px #ff00ff;
+    }
+
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 40px 60px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .register-form {
+        background: rgba(10, 10, 10, 0.95);
+        border: 1px solid #ffffff;
+        padding: 40px;
+        width: 100%;
+        max-width: 550px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .register-form:hover {
+        border-color: #ff00ff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+    }
+
+    .register-form h3 {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 1.3rem;
+        color: #ff00ff;
+        margin-bottom: 25px;
+        letter-spacing: 2px;
+        text-align: center;
+    }
+
+    .account-type-selector {
+        margin-bottom: 30px;
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .account-type-selector label {
+        font-size: 0.85rem;
+        margin: 0 20px;
+        cursor: pointer;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 1px;
+    }
+
+    .account-type-selector input {
+        margin-right: 8px;
+        cursor: pointer;
+    }
+
+    .account-type-selector .selector-label {
+        font-size: 0.7rem;
+        color: #ff00ff;
+        display: block;
+        margin-bottom: 15px;
+        letter-spacing: 2px;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .input-group label {
+        font-size: 0.75rem;
+        color: #ffffff;
+        display: block;
+        margin-bottom: 8px;
+        font-family: 'Space Mono', monospace;
+        letter-spacing: 1px;
+    }
+
+    .input-group input, .input-group select {
+        width: 100%;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        color: #ffffff;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.85rem;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    .input-group select option {
+        background: #0a0a0a;
+        color: #ffffff;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+        border-color: #ff00ff;
+        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+    }
+
+    .dynamic-fields {
+        transition: all 0.3s ease;
+    }
+
+    .dynamic-fields.hidden {
+        display: none;
+    }
+
+    .register-btn {
+        width: 100%;
+        padding: 12px;
+        background: transparent;
+        border: 1px solid #ffffff;
+        color: #ffffff;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 20px;
+    }
+
+    .register-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        border-color: #ff00ff;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .login-link {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.6);
+    }
+
+    .login-link a {
+        color: #ff00ff;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        background: rgba(255, 0, 0, 0.2);
+        border: 1px solid #ff0000;
+        padding: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #ff6666;
+        display: none;
+    }
+
+    .success-message {
+        background: rgba(0, 255, 0, 0.2);
+        border: 1px solid #00ff00;
+        padding: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #66ff66;
+        display: none;
+    }
+
+    @media(max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px 20px;
+        }
+        .navbar-left, .navbar-right {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .search-container {
+            width: 100%;
+        }
+        .search-input {
+            flex-grow: 1;
+            width: auto;
+        }
+        .page-header {
+            margin-top: 140px;
+        }
+        .register-container {
+            padding: 20px;
+        }
+        .register-form {
+            padding: 25px;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+        .account-type-selector label {
+            margin: 0 10px;
+            font-size: 0.75rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="crt-effect"></div>
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="/" class="logo">STYLIX</a>
+        <a href="/">HOME</a>
+        <a href="/shoptest.html">SHOP</a>
+        <a href="/exploreDesigners.html">DESIGNERS</a>
+        <a href="/aboutus.html">ABOUT</a>
+        <a href="/contact.html">CONTACT</a>
+        <a href="#" id="dashboard-link" style="display: none;">MY CLOSET</a>
+    </div>
+    <div class="navbar-right">
+        <a href="checkout.html" id="cart-btn"><i class="fas fa-shopping-cart"></i> CART</a>
+        <div class="search-container">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="search-input" placeholder="SEARCH...">
+            <button id="searchActionBtn" class="search-action-btn" onclick="performSearch()">[GO]</button>
+        </div>
+        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+            <span class="greeting-text" id="user-greeting">Hello, USER</span>
+            <div class="dropdown-content">
+                <a href="#" id="logout-link">[LOGOUT]</a>
+            </div>
+        </div>
+        <a href="/login.html" id="login-link">LOGIN</a>
+        <a href="/register.html" id="register-link">[SIGNUP]</a>
+    </div>
+</nav>
+
+<div class="page-header">
+    <h1>REGISTRATION</h1>
+    <div class="accent-line"></div>
+</div>
+
+<div class="register-container">
+    <div class="register-form">
+        <h3>CREATE ACCOUNT</h3>
+        
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        
+        <form id="registerForm">
+            <div class="account-type-selector">
+                <div class="selector-label">SELECT ACCOUNT TYPE</div>
+                <label>
+                    <input type="radio" name="accountType" value="user" checked> [ USER ]
+                </label>
+                <label>
+                    <input type="radio" name="accountType" value="designer"> [ DESIGNER ]
+                </label>
+            </div>
+            
+            <!-- User section -->
+            <div id="userFields" class="dynamic-fields">
+                <div class="input-group">
+                    <label>FULL NAME:</label>
+                    <input type="text" id="fullName" placeholder="John Doe" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>USERNAME:</label>
+                    <input type="text" id="username" placeholder="johndoe" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>EMAIL:</label>
+                    <input type="email" id="email" placeholder="user@example.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>PASSWORD:</label>
+                    <input type="password" id="password" placeholder="********" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>BODY_TYPE:</label>
+                    <select id="bodyType">
+                        <option value="Slim">Slim</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Athletic">Athletic</option>
+                        <option value="Curvy">Curvy</option>
+                        <option value="Plus">Plus</option>
+                        <option value="Petite">Petite</option>
+                        <option value="Tall">Tall</option>
+                        <option value="Fit">Fit</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>HEIGHT (IN):</label>
+                    <input type="number" id="height" placeholder="e.g., 70" value="70">
+                </div>
+                
+                <div class="input-group">
+                    <label>WEIGHT (LB):</label>
+                    <input type="number" id="weight" placeholder="e.g., 180" value="180">
+                </div>
+            </div>
+            
+            <!-- Designer section -->
+            <div id="designerFields" class="dynamic-fields hidden">
+                <div class="input-group">
+                    <label>BRAND NAME:</label>
+                    <input type="text" id="brandName" placeholder="Your Brand Name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>BRAND EMAIL:</label>
+                    <input type="email" id="brandEmail" placeholder="brand@example.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>PASSWORD:</label>
+                    <input type="password" id="designerPassword" placeholder="********" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="register-btn">[ REGISTER ]</button>
+        </form>
+        
+        <div class="login-link">
+            ALREADY HAVE AN ACCOUNT? <a href="/login.html">LOGIN</a>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentUser = null;
+const searchInput = document.getElementById("searchInput");
+
+function performSearch() {
+    const query = searchInput.value;
+    if (query && query.trim() !== "") {
+        window.location.href = `/shoptest.html?search=${encodeURIComponent(query)}`;
+    }
+}
+
+searchInput?.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        performSearch();
+    }
+});
+
+const searchActionBtn = document.getElementById("searchActionBtn");
+if (searchActionBtn) {
+    searchActionBtn.addEventListener("click", function() {
+        performSearch();
+    });
+}
+
+//user and designer fields
+const userRadio = document.querySelector('input[value="user"]');
+const designerRadio = document.querySelector('input[value="designer"]');
+const userFields = document.getElementById('userFields');
+const designerFields = document.getElementById('designerFields');
+
+function toggleFields() {
+    if (userRadio.checked) {
+        userFields.classList.remove('hidden');
+        designerFields.classList.add('hidden');
+        //made user fields required
+        document.getElementById('fullName').required = true;
+        document.getElementById('username').required = true;
+        document.getElementById('email').required = true;
+        document.getElementById('password').required = true;
+        // Remove required from designer fields
+        document.getElementById('brandName').required = false;
+        document.getElementById('brandEmail').required = false;
+        document.getElementById('designerPassword').required = false;
+    } else {
+        userFields.classList.add('hidden');
+        designerFields.classList.remove('hidden');
+        //made designer fields required
+        document.getElementById('fullName').required = false;
+        document.getElementById('username').required = false;
+        document.getElementById('email').required = false;
+        document.getElementById('password').required = false;
+        document.getElementById('brandName').required = true;
+        document.getElementById('brandEmail').required = true;
+        document.getElementById('designerPassword').required = true;
+    }
+}
+
+userRadio.addEventListener('change', toggleFields);
+designerRadio.addEventListener('change', toggleFields);
+
+
+toggleFields();
+
+//form submission
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const errorDiv = document.getElementById('error-message');
+    const successDiv = document.getElementById('success-message');
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    
+    const accountType = document.querySelector('input[name="accountType"]:checked').value;
+    
+    if (accountType === 'user') {
+        const fullName = document.getElementById('fullName').value;
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const bodyType = document.getElementById('bodyType').value;
+        const height = parseInt(document.getElementById('height').value);
+        const weight = parseInt(document.getElementById('weight').value);
+        
+        //get the max user id
+        const maxIdRes = await fetch('/users/max-id');
+        const maxIdData = await maxIdRes.json();
+        const newUserId = (maxIdData.maxId || 0) + 1;
+        
+        const userData = {
+            user_id: newUserId,
+            user_name: username,
+            user_email: email,
+            body_type: bodyType,
+            subscription_type: 'Free',
+            user_password: password,
+            height_in: height,
+            weight_lb: weight
+        };
+        
+        try {
+            const response = await fetch('/register-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                successDiv.textContent = 'Registration successful! Redirecting to login...';
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 2000);
+            } else {
+                errorDiv.textContent = `Error: ${data.message}`;
+                errorDiv.style.display = 'block';
+            }
+        } catch (error) {
+            errorDiv.textContent = `Error: ${error.message}`;
+            errorDiv.style.display = 'block';
+        }
+        
+    } else if (accountType === 'designer') {
+        const brandName = document.getElementById('brandName').value;
+        const brandEmail = document.getElementById('brandEmail').value;
+        const password = document.getElementById('designerPassword').value;
+        
+        //get max designer id
+        const maxIdRes = await fetch('/designers/max-id');
+        const maxIdData = await maxIdRes.json();
+        const newDesignerId = (maxIdData.maxId || 0) + 1;
+        
+        const designerData = {
+            designer_id: newDesignerId,
+            brand_name: brandName,
+            brand_email: brandEmail,
+            designer_password: password
+        };
+        
+        try {
+            const response = await fetch('/register-designer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(designerData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                successDiv.textContent = 'Registration successful! Redirecting to login...';
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 2000);
+            } else {
+                errorDiv.textContent = `Error: ${data.message}`;
+                errorDiv.style.display = 'block';
+            }
+        } catch (error) {
+            errorDiv.textContent = `Error: ${error.message}`;
+            errorDiv.style.display = 'block';
+        }
+    }
+});
+
+// checklogin stat
+async function checkLoginStatus() {
+    try {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        
+        if (data.loggedIn) {
+            document.getElementById("login-link").style.display = "none";
+            document.getElementById("register-link").style.display = "none";
+            document.getElementById("my-closet-link").style.display = "inline";
+            document.getElementById("user-dropdown").style.display = "inline-block";
+            document.getElementById("user-greeting").textContent = `Hello, ${data.userName.toUpperCase()}`;
+        } else {
+            document.getElementById("login-link").style.display = "inline";
+            document.getElementById("register-link").style.display = "inline";
+            document.getElementById("my-closet-link").style.display = "none";
+            document.getElementById("user-dropdown").style.display = "none";
+        }
+    } catch (error) {
+        console.error("Error checking login status:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutLink = document.getElementById("logout-link");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+                const res = await fetch("/logout", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+    }
+});
+
+checkLoginStatus();
+</script>
+</body>
+</html>

@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STYLIX</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    @font-face {
+        src: url(fonts/YAGIZA__.TTF);
+        font-family: YAGIZA;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #0a0a0a;
+        font-family: 'Space Mono', 'Share Tech Mono', monospace;
+        color: #ffffff;
+        margin: 0;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .crt-effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+    }
+
+    .hero {
+        position: relative;
+        height: 85vh;
+        min-height: 600px;
+        overflow: hidden;
+        margin-bottom: 60px;
+        border-bottom: 2px solid #ffffff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        z-index: 1;
+    }
+
+    .hero-slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: grayscale(30%) contrast(120%);
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(255,255,255,0.1) 100%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .hero-content h1 {
+        font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+        font-size: 6rem;
+        color: #ffffff;
+        margin-bottom: 20px;
+        letter-spacing: 8px;
+        text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px rgba(255,255,255,0.5);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff; }
+        50% { text-shadow: 0 0 20px #ffffff, 0 0 40px #ffffff, 0 0 60px rgba(255,255,255,0.8); }
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+        color: #00ffff;
+        max-width: 600px;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-family: 'Share Tech Mono', monospace;
+    }
+
+    .hero-btn {
+        display: inline-block;
+        padding: 14px 40px;
+        background: transparent;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 700;
+        border: 2px solid #ffffff;
+        border-radius: 0;
+        transition: all 0.3s ease;
+        letter-spacing: 2px;
+        font-family: 'Space Mono', monospace;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .hero-btn:hover {
+        background: #ffffff;
+        color: #0a0a0a;
+        transform: translateY(-2px);
+        text-decoration: none;
+        box-shadow: 0 0 20px #ffffff;
+    }
+
+    .slider-dots {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 3;
+    }
+
+    .slider-dot {
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+
+    .slider-dot.active {
+        background: #00ffff;
+        width: 30px;
+        box-shadow: 0 0 10px #00ffff;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 40px;
+        z-index: 1000;
+        border-bottom: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .navbar-left .logo {
+        font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-decoration: none;
+        letter-spacing: 4px;
+        text-shadow: 0 0 5px #ffffff;
+    }
+
+    .navbar-left .logo span {
+        color: #ff00ff;
+        text-shadow: 0 0 5px #ff00ff;
+    }
+
+    .navbar-left a, .navbar-right a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .navbar-left a::before, .navbar-right a::before {
+        content: '>';
+        position: absolute;
+        left: -12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .navbar-left a:hover::before, .navbar-right a:hover::before {
+        opacity: 1;
+    }
+
+    .navbar-left a:hover, .navbar-right a:hover {
+        color: #ff00ff;
+        padding-left: 8px;
+    }
+
+    .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        padding: 5px 5px 5px 15px;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-icon {
+        color: #ffffff;
+        font-size: 0.9rem;
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        padding: 8px 10px;
+        color: #ffffff;
+        font-size: 0.85rem;
+        width: 180px;
+        outline: none;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-action-btn {
+        background: #ffffff;
+        border: none;
+        color: #0a0a0a;
+        padding: 6px 16px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .search-action-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .user-dropdown {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .greeting-text {
+        color: #ffffff;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        font-size: 0.85rem;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 10px;
+        background: #0a0a0a;
+        min-width: 140px;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #ffffff;
+        padding: 12px 20px;
+        display: block;
+        font-size: 0.8rem;
+    }
+
+    .dropdown-content a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ff00ff;
+    }
+
+    .user-dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    #cart-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .section-header {
+        text-align: center;
+        margin: 60px 0 40px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .section-header h2 {
+        font-size: 2rem;
+        font-weight: 400;
+        color: #ffffff;
+        margin-bottom: 10px;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+    }
+
+    .section-header .accent-line {
+        width: 80px;
+        height: 2px;
+        background: #ff00ff;
+        margin: 15px auto 0;
+        box-shadow: 0 0 5px #ff00ff;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        padding: 0 40px 60px;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card {
+        background: rgba(10, 10, 10, 0.9);
+        border: 1px solid #ffffff;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        position: relative;
+        cursor: pointer;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .card:hover::before {
+        left: 100%;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        border-color: #ff00ff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+    }
+
+    .card-img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        filter: grayscale(20%) contrast(110%);
+        transition: all 0.5s ease;
+    }
+
+    .card:hover .card-img {
+        filter: grayscale(0%) contrast(120%);
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    .card h3 {
+        font-size: 0.95rem;
+        font-weight: 400;
+        margin: 0 0 8px 0;
+        color: #ffffff;
+        letter-spacing: 1px;
+        font-family: 'Space Mono', monospace;
+        text-transform: uppercase;
+    }
+
+    .designer-name {
+        color: #ffffff;
+        margin: 5px 0;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Share Tech Mono', monospace;
+    }
+
+    .item-price {
+        color: #ffffff;
+        margin: 10px 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .card-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn {
+        flex: 1;
+        padding: 8px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        background: transparent;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        transition: all 0.3s;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-family: 'Share Tech Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn:hover {
+        background: #ffffff;
+        color: #0a0a0a;
+        border-color: #ffffff;
+        box-shadow: 0 0 10px #ffffff;
+    }
+
+    .like-btn {
+        border-color: #ffffff;
+        color: #ffffff;
+    }
+
+    .like-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .search-header {
+        text-align: center;
+        margin: 20px 40px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid #ffffff;
+        position: relative;
+        z-index: 1;
+    }
+
+    .search-header.hidden {
+        display: none;
+    }
+
+    .reset-btn {
+        background: transparent;
+        color: #ff00ff;
+        border: 1px solid #ff00ff;
+        padding: 10px 24px;
+        cursor: pointer;
+        margin-top: 10px;
+        font-weight: 500;
+        transition: all 0.3s;
+        font-family: 'Share Tech Mono', monospace;
+        text-transform: uppercase;
+    }
+
+    .reset-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .no-results {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 80px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid #ffffff;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.95);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: #0a0a0a;
+        border: 2px solid #ff00ff;
+        margin: 3% auto;
+        padding: 30px;
+        width: 80%;
+        max-width: 800px;
+        max-height: 85vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 0 30px rgba(255,0,255,0.3);
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        color: #ff00ff;
+        font-size: 35px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .close-modal:hover {
+        color: #ffffff;
+    }
+
+    .modal-item-image {
+        width: 100%;
+        max-height: 350px;
+        object-fit: cover;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .modal-item-title {
+        font-size: 1.8rem;
+        color: #ff00ff;
+        margin-bottom: 10px;
+        font-family: 'Share Tech Mono', monospace;
+        text-align: center;
+    }
+
+    .modal-item-description {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin: 20px 0;
+        color: rgba(255,255,255,0.9);
+    }
+
+    .modal-item-details {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 20px 0;
+        padding: 0;
+        flex-wrap: wrap;
+    }
+
+    .modal-item-details div {
+        font-size: 0.75rem;
+        text-align: center;
+    }
+
+    .modal-item-details strong {
+        color: #ff00ff;
+        font-weight: 600;
+    }
+
+    .modal-item-price {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 10px 0;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .footer {
+        text-align: center;
+        padding: 40px;
+        border-top: 1px solid #ffffff;
+        margin-top: 40px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.75rem;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+    }
+
+    @media(max-width: 1200px) {
+        .content-grid { grid-template-columns: repeat(3, 1fr); padding: 0 30px; }
+        .hero-content h1 { font-size: 4rem; }
+    }
+
+    @media(max-width: 900px) {
+        .content-grid { grid-template-columns: repeat(2, 1fr); }
+        .navbar { padding: 12px 20px; }
+        .navbar-left { gap: 20px; }
+        .navbar-left .logo { font-size: 1.4rem; }
+        .modal-item-details { gap: 15px; }
+    }
+
+    @media(max-width: 768px) {
+        .navbar { flex-direction: column; gap: 12px; }
+        .navbar-left, .navbar-right { flex-wrap: wrap; justify-content: center; }
+        .search-container { width: 100%; }
+        .search-input { flex-grow: 1; width: auto; }
+        .content-grid { grid-template-columns: 1fr; padding: 0 20px; }
+        .hero { height: 70vh; min-height: 500px; }
+        .hero-content h1 { font-size: 2.5rem; letter-spacing: 4px; }
+        .hero-content p { font-size: 0.85rem; }
+        .card-img { height: 280px; }
+        .modal-content { width: 95%; margin: 10% auto; padding: 20px; }
+        .modal-item-title { font-size: 1.3rem; }
+        .modal-item-details { gap: 10px; }
+        .modal-item-details div { font-size: 0.65rem; }
+    }
+</style>
+</head>
+<body>
+
+<div class="crt-effect"></div>
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="/" class="logo">STYLIX</a>
+        <a href="/">HOME</a>
+        <a href="/shoptest.html">SHOP</a>
+        <a href="/exploreDesigners.html">DESIGNERS</a>
+        <a href="/aboutus.html">ABOUT</a>
+        <a href="/contact.html">CONTACT</a>
+        <a href="#" id="dashboard-link" style="display: none;">MY CLOSET</a>
+    </div>
+    <div class="navbar-right">
+        <a href="checkout.html" id="cart-btn"><i class="fas fa-shopping-cart"></i> CART</a>
+        <div class="search-container">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="search-input" placeholder="SEARCH...">
+            <button id="searchActionBtn" class="search-action-btn" onclick="toggleSearchClear()">[GO]</button>
+        </div>
+        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+            <span class="greeting-text" id="user-greeting">Hello, USER</span>
+            <div class="dropdown-content">
+                <a href="#" id="logout-link">[LOGOUT]</a>
+            </div>
+        </div>
+        <a href="/login.html" id="login-link">LOGIN</a>
+        <a href="/register.html" id="register-link">[SIGNUP]</a>
+    </div>
+</nav>
+
+<div class="hero">
+    <div class="hero-slider" id="heroSlider">
+        <div class="hero-slide active" style="background-image: url('clothes.jpg');"></div>
+        <div class="hero-slide" style="background-image: url('clothes2.jpg');"></div>
+        <div class="hero-slide" style="background-image: url('clothes3.jpg');"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>STYLIX</h1>
+        <a href="/shoptest.html" class="hero-btn">Show Now</a>
+    </div>
+    <div class="slider-dots" id="sliderDots">
+        <div class="slider-dot active" data-slide="0"></div>
+        <div class="slider-dot" data-slide="1"></div>
+        <div class="slider-dot" data-slide="2"></div>
+    </div>
+</div>
+
+<div class="section-header">
+    <h2>FEATURED ITEMS</h2>
+    <div class="accent-line"></div>
+</div>
+
+<div id="search-header" class="search-header hidden">
+    <h3>SEARCH RESULTS</h3>
+    <button class="reset-btn" onclick="resetToAllItems()">[ CLEAR ]</button>
+</div>
+
+<section class="content-grid" id="items-container"></section>
+
+<!-- Item Detail Modal -->
+<div id="itemModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div id="modal-content-inner">
+            <!-- Dynamic content will load here -->
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>© 2026 STYLIX</p>
+</footer>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let likedItems = [];
+let currentUser = null;
+let allItems = [];
+let isSearchMode = false;
+
+const searchInput = document.getElementById("searchInput");
+const searchActionBtn = document.getElementById("searchActionBtn");
+
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-slide');
+const dots = document.querySelectorAll('.slider-dot');
+
+function changeSlide(index) {
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    slides[index].classList.add('active');
+    dots[index].classList.add('active');
+    currentSlide = index;
+}
+
+function nextSlide() {
+    let next = (currentSlide + 1) % slides.length;
+    changeSlide(next);
+}
+
+setInterval(nextSlide, 5000);
+
+dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => changeSlide(index));
+});
+
+async function checkLoginStatus() {
+    try {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        
+        if (data.loggedIn) {
+            currentUser = data;
+            document.getElementById("login-link").style.display = "none";
+            document.getElementById("register-link").style.display = "none";
+            document.getElementById("user-dropdown").style.display = "inline-block";
+            document.getElementById("user-greeting").textContent = `Hello, ${data.userName.toUpperCase()}`;
+            
+            const dashboardLink = document.getElementById("dashboard-link");
+            if (dashboardLink) {
+                if (data.accountType === 'designer') {
+                    dashboardLink.href = "/designerdash.html";
+                    dashboardLink.textContent = "DASHBOARD";
+                } else {
+                    dashboardLink.href = "/userdash.html";
+                    dashboardLink.textContent = "MY CLOSET";
+                }
+                dashboardLink.style.display = "inline";
+            }
+            
+            const cartBtn = document.getElementById("cart-btn");
+            if (cartBtn && data.accountType === 'designer') {
+                cartBtn.style.display = "none";
+            }
+        } else {
+            currentUser = null;
+            document.getElementById("login-link").style.display = "inline";
+            document.getElementById("register-link").style.display = "inline";
+            document.getElementById("user-dropdown").style.display = "none";
+            const dashboardLink = document.getElementById("dashboard-link");
+            if (dashboardLink) dashboardLink.style.display = "none";
+        }
+    } catch (error) {
+        console.error("Error checking login status:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutLink = document.getElementById("logout-link");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+                const res = await fetch("/logout", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+    }
+});
+
+async function loadItems() {
+    try {
+        const [itemsRes, likedRes] = await Promise.all([
+            fetch("/items"),
+            fetch("/liked-items")
+        ]);
+
+        allItems = await itemsRes.json();
+        const likedData = await likedRes.json();
+        likedItems = likedData.likedIds || [];
+        
+        displayItems(allItems);
+    } catch (error) {
+        console.error("Error loading items:", error);
+    }
+}
+
+function displayItems(items) {
+    const container = document.getElementById("items-container");
+    container.innerHTML = "";
+
+    if (items.length === 0) {
+        container.innerHTML = `
+            <div class="no-results">
+                <p>No items found</p>
+                <button class="reset-btn" onclick="resetToAllItems()">[ CLEAR SEARCH ]</button>
+            </div>
+        `;
+        return;
+    }
+
+    items.forEach(item => {
+        const isLiked = likedItems.includes(item.item_id);
+
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.dataset.id = item.item_id;
+
+        div.innerHTML = `
+            <img src="${item.image_url}" class="card-img" onerror="this.src='https://via.placeholder.com/400x280?text=NO+IMAGE'">
+            <div class="card-content">
+                <h3>${item.item_name.toUpperCase()}</h3>
+                <p class="designer-name">[${item.brand_name.toUpperCase()}]</p>
+                <p class="item-price">$${item.price}</p>
+                <div class="card-buttons">
+                    <button class="btn" onclick="addToCart(${item.item_id})"><i class="fas fa-shopping-cart"></i> [ADD]</button>
+                    <button class="btn like-btn">
+                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}"></i> ${isLiked ? "[LIKED]" : "[LIKE]"}
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+async function performSearch(query) {
+    if (!query || query.trim() === "") {
+        resetToAllItems();
+        return;
+    }
+
+    try {
+        const res = await fetch("/search?q=" + encodeURIComponent(query));
+        const searchResults = await res.json();
+        
+        const likedData = await fetch("/liked-items");
+        const likedResult = await likedData.json();
+        likedItems = likedResult.likedIds || [];
+        
+        isSearchMode = true;
+        document.getElementById("search-header").classList.remove("hidden");
+        
+        searchActionBtn.innerHTML = '[CLR]';
+        searchActionBtn.classList.add("search-active");
+        
+        displayItems(searchResults);
+        document.getElementById("items-container").scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+        console.error("Search error:", error);
+        alert("Error performing search. Please try again.");
+    }
+}
+
+function resetToAllItems() {
+    searchInput.value = "";
+    isSearchMode = false;
+    document.getElementById("search-header").classList.add("hidden");
+    searchActionBtn.innerHTML = '[GO]';
+    searchActionBtn.classList.remove("search-active");
+    displayItems(allItems);
+}
+
+function toggleSearchClear() {
+    if (isSearchMode) {
+        resetToAllItems();
+    } else {
+        performSearch(searchInput.value);
+    }
+}
+
+function addToCart(id){
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(id);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("added to cart");
+}
+
+//modal functions
+async function showItemDetails(itemId) {
+    try {
+        const res = await fetch(`/item/${itemId}`);
+        const item = await res.json();
+        
+        const modalContent = document.getElementById("modal-content-inner");
+        modalContent.innerHTML = `
+            <img src="${item.image_url}" class="modal-item-image" onerror="this.src='https://via.placeholder.com/400x300?text=NO+IMAGE'">
+            <h2 class="modal-item-title">${(item.item_name || '').toUpperCase()}</h2>
+            <p class="designer-name" style="text-align: center;">[${(item.brand_name || 'UNKNOWN').toUpperCase()}]</p>
+            <div class="modal-item-price">$${Number(item.price || 0).toFixed(2)}</div>
+            <div class="modal-item-details">
+                <div><strong>CATEGORY</strong><br>${item.category || 'N/A'}</div>
+                <div><strong>STYLE</strong><br>${item.style || 'N/A'}</div>
+                <div><strong>SIZE</strong><br>${item.size_range || 'N/A'}</div>
+                <div><strong>INVENTORY</strong><br>${item.inventory || 0}</div>
+            </div>
+            <div class="modal-item-description">
+                <strong>description:</strong><br>
+                ${item.description || 'No description available for this item.'}
+            </div>
+            <div class="card-buttons" style="margin-top: 20px;">
+                <button class="btn" onclick="addToCart(${item.item_id})"><i class="fas fa-shopping-cart"></i> [ ADD TO CART ]</button>
+                <button class="btn" onclick="closeModal()"><i class="fas fa-times"></i> [ CLOSE ]</button>
+            </div>
+        `;
+        
+        document.getElementById("itemModal").style.display = "block";
+        document.body.style.overflow = "hidden";
+    } catch (error) {
+        console.error("Error loading item details:", error);
+        alert("Could not load item details");
+    }
+}
+
+function closeModal() {
+    document.getElementById("itemModal").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+//card click
+document.addEventListener("click", async function(e) {
+    const card = e.target.closest(".card");
+    if (!card) return;
+    
+    //don't open modal if clicking on buttons
+    if (e.target.closest(".btn")) return;
+    
+    const itemId = parseInt(card.dataset.id);
+    await showItemDetails(itemId);
+});
+
+//close modal
+document.querySelector(".close-modal")?.addEventListener("click", closeModal);
+
+//outside click close modal
+window.addEventListener("click", function(e) {
+    const modal = document.getElementById("itemModal");
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+
+//close modal esc key
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closeModal();
+    }
+});
+
+//like button handler
+document.addEventListener("click", async function(e){
+    const likeBtn = e.target.closest(".like-btn");
+    if(!likeBtn) return;
+
+    if (!currentUser) {
+        alert("Login required");
+        window.location.href = "/login.html";
+        return;
+    }
+
+    const card = likeBtn.closest(".card");
+    const itemId = parseInt(card.dataset.id);
+
+    try {
+        const res = await fetch("/like-item", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({ itemId })
+        });
+
+        const data = await res.json();
+
+        if(data.success){
+            const icon = likeBtn.querySelector('i');
+            const text = likeBtn.childNodes[likeBtn.childNodes.length - 1];
+            
+            if (data.liked) {
+                icon.className = 'fas fa-heart';
+                text.textContent = ' [LIKED]';
+                likedItems.push(itemId);
+            } else {
+                icon.className = 'far fa-heart';
+                text.textContent = ' [LIKE]';
+                likedItems = likedItems.filter(id => id !== itemId);
+            }
+        } else if (data.error === "not_logged_in") {
+            alert("Login required");
+            window.location.href = "/login.html";
+        } else {
+            alert("Error, please try again");
+        }
+    } catch (error) {
+        console.error("Error liking item:", error);
+        alert("Error connection failed");
+    }
+});
+
+searchInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        if (isSearchMode) {
+            resetToAllItems();
+        } else {
+            performSearch(this.value);
+        }
+    }
+});
+
+checkLoginStatus().then(() => {
+    loadItems();
+});
+</script>
+</body>
+</html>

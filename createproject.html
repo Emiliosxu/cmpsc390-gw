@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STYLIX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            src: url(fonts/YAGIZA__.TTF);
+            font-family: YAGIZA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Space Mono', 'Share Tech Mono', monospace;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .crt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            z-index: 1000;
+            border-bottom: 1px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .navbar-left .logo {
+            font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 4px;
+            text-shadow: 0 0 5px #ffffff;
+        }
+
+        .navbar-left .logo span {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        .navbar-left a, .navbar-right a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .navbar-left a::before, .navbar-right a::before {
+            content: '>';
+            position: absolute;
+            left: -12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .navbar-left a:hover::before, .navbar-right a:hover::before {
+            opacity: 1;
+        }
+
+        .navbar-left a:hover, .navbar-right a:hover {
+            color: #ff00ff;
+            padding-left: 8px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            padding: 5px 5px 5px 15px;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .search-icon {
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            padding: 8px 10px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            width: 180px;
+            outline: none;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-action-btn {
+            background: #ffffff;
+            border: none;
+            color: #0a0a0a;
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-action-btn:hover {
+            background: #ff00ff;
+            color: #0a0a0a;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .greeting-text {
+            color: #ffffff;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 10px;
+            background: #0a0a0a;
+            min-width: 140px;
+            border: 1px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #ffffff;
+            padding: 12px 20px;
+            display: block;
+            font-size: 0.8rem;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ff00ff;
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0a !important;
+            border: 1px solid #ffffff;
+            color: #ffffff !important;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0a0a0a !important;
+            color: #ffffff !important;
+            padding: 10px;
+        }
+
+        select:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper input[type="file"]:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .file-input-wrapper input[type="file"]:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .file-input-wrapper input[type="file"]::file-selector-button {
+            background: rgba(255, 0, 255, 0.2);
+            color: #ff00ff;
+            border: 1px solid #ff00ff;
+            padding: 8px 16px;
+            margin-right: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            transition: all 0.3s;
+        }
+
+        .file-input-wrapper input[type="file"]::file-selector-button:hover {
+            background: #ff00ff;
+            color: #0a0a0a;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 150px;
+            border: 1px solid #ff00ff;
+            border-radius: 4px;
+            padding: 5px;
+            background: #0a0a0a;
+        }
+
+        .page-header {
+            text-align: center;
+            margin: 100px 0 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .page-header .accent-line {
+            width: 80px;
+            height: 2px;
+            background: #ff00ff;
+            margin: 15px auto 0;
+            box-shadow: 0 0 5px #ff00ff;
+        }
+
+        .page-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 40px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-container {
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid #ffffff;
+            padding: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-container:hover {
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.85rem;
+            color: #ff00ff;
+            letter-spacing: 1px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: 1 / 3;
+        }
+
+        .input-group {
+            margin-bottom: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.7rem;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .button-row {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #ff00ff;
+            color: #0a0a0a;
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 4px;
+            display: none;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff6666;
+        }
+
+        @media(max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: auto;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 20px;
+            }
+            .navbar-left, .navbar-right {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .search-container {
+                width: 100%;
+            }
+            .search-input {
+                flex-grow: 1;
+                width: auto;
+            }
+            .page-header {
+                margin-top: 140px;
+            }
+            .page-container {
+                padding: 20px;
+            }
+            .form-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="crt-effect"></div>
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="/" class="logo">STYLIX</a>
+        <a href="/">HOME</a>
+        <a href="/shoptest.html">SHOP</a>
+        <a href="/exploreDesigners.html">DESIGNERS</a>
+        <a href="/aboutus.html">ABOUT</a>
+        <a href="/contact.html">CONTACT</a>
+        <a href="#" id="dashboard-link" style="display: none;">DASHBOARD</a>
+    </div>
+    <div class="navbar-right">
+        <a href="checkout.html" id="cart-btn"><i class="fas fa-shopping-cart"></i> CART</a>
+        <div class="search-container">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="search-input" placeholder="SEARCH...">
+            <button id="searchActionBtn" class="search-action-btn" onclick="performSearch()">[GO]</button>
+        </div>
+        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+            <span class="greeting-text" id="user-greeting">Hello, USER</span>
+            <div class="dropdown-content">
+                <a href="#" id="logout-link">[LOGOUT]</a>
+            </div>
+        </div>
+        <a href="/login.html" id="login-link">LOGIN</a>
+        <a href="/register.html" id="register-link">[SIGNUP]</a>
+    </div>
+</nav>
+
+<div class="page-header">
+    <h1>CREATE LISTING</h1>
+    <div class="accent-line"></div>
+</div>
+
+<div class="page-container">
+    <div class="form-container">
+        <div class="subtitle">ADD NEW ITEM</div>
+
+        <form id="projectForm" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>ITEM NAME</label>
+                    <input type="text" id="item_name" placeholder="e.g., Blue Shirt" required>
+                </div>
+
+                <div class="full-width input-group">
+                    <label>DESCRIPTION</label>
+                    <textarea id="description" rows="4" placeholder="Describe item - fabric, fit, care instructions, etc." required></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>CATEGORY</label>
+                    <select id="category" required>
+                        <option value="">SELECT CATEGORY</option>
+                        <option value="Shirt">SHIRTS</option>
+                        <option value="Tops">TOPS</option>
+                        <option value="Pants">PANTS</option>
+                        <option value="Jacket">JACKETS</option>
+                        <option value="Coat">COATS</option>
+                        <option value="Shoes">SHOES</option>
+                        <option value="Boots">BOOTS</option>
+                        <option value="Heels">HEELS</option>
+                        <option value="Dress">DRESS</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>STYLE</label>
+                    <select id="style" required>
+                        <option value="">SELECT STYLE</option>
+                        <option value="Casual">CASUAL</option>
+                        <option value="Formal">FORMAL</option>
+                        <option value="Streetwear">STREETWEAR</option>
+                        <option value="Minimal">MINIMAL</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>OCCASION</label>
+                    <input type="text" id="occasion" placeholder="e.g., Casual, Work, Formal">
+                </div>
+
+                <div class="input-group">
+                    <label>PRICE ($)</label>
+                    <input type="number" id="price" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+
+                <div class="input-group">
+                    <label>INVENTORY</label>
+                    <input type="number" id="inventory" min="0" placeholder="Quantity" required>
+                </div>
+
+                <div class="input-group">
+                    <label>SIZE</label>
+                    <input type="number" id="size_range" min="1" placeholder="e.g., 40" required>
+                </div>
+
+                <div class="full-width input-group">
+                    <label>IMAGE</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="image" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" required>
+                    </div>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button type="submit" class="btn">[ CREATE LISTING ]</button>
+                <button type="reset" class="btn">[ CLEAR FORM ]</button>
+                <a href="/designerdash.html" class="btn">[ BACK ]</a>
+            </div>
+        </form>
+
+        <div id="messageBox" class="message"></div>
+    </div>
+</div>
+
+<script>
+let currentUser = null;
+
+const searchInput = document.getElementById("searchInput");
+function performSearch() {
+    const query = searchInput.value;
+    if (query && query.trim() !== "") {
+        window.location.href = `/shoptest.html?search=${encodeURIComponent(query)}`;
+    }
+}
+
+if (searchInput) {
+    searchInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            performSearch();
+        }
+    });
+}
+
+const searchActionBtn = document.getElementById("searchActionBtn");
+if (searchActionBtn) {
+    searchActionBtn.addEventListener("click", function() {
+        performSearch();
+    });
+}
+
+document.getElementById("image").addEventListener("change", function(e) {
+    const preview = document.getElementById("imagePreview");
+    preview.innerHTML = "";
+    
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = document.createElement("img");
+            img.src = event.target.result;
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+async function checkLoginStatus() {
+    try {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        
+        if (data.loggedIn) {
+            currentUser = data;
+            
+            const loginLink = document.getElementById("login-link");
+            const registerLink = document.getElementById("register-link");
+            const userDropdown = document.getElementById("user-dropdown");
+            const userGreeting = document.getElementById("user-greeting");
+            const dashboardLink = document.getElementById("dashboard-link");
+            const cartBtn = document.getElementById("cart-btn");
+            
+            if (loginLink) loginLink.style.display = "none";
+            if (registerLink) registerLink.style.display = "none";
+            if (userDropdown) userDropdown.style.display = "inline-block";
+            if (userGreeting) userGreeting.textContent = `DESIGNER, ${data.userName.toUpperCase()}`;
+            if (dashboardLink) dashboardLink.style.display = "none";
+            if (cartBtn) cartBtn.style.display = "none";
+        } else {
+            window.location.href = "/login.html";
+        }
+    } catch (error) {
+        console.error("Error checking login status:", error);
+        window.location.href = "/login.html";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutLink = document.getElementById("logout-link");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+                const res = await fetch("/logout", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = "/";
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+    }
+});
+
+const form = document.getElementById("projectForm");
+const messageBox = document.getElementById("messageBox");
+
+function showMessage(text, type) {
+    if (messageBox) {
+        messageBox.style.display = "block";
+        messageBox.className = `message ${type}`;
+        messageBox.textContent = `> ${text}`;
+    }
+}
+
+form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const designerId = currentUser ? currentUser.userId : null;
+    
+    if (!designerId) {
+        showMessage("DESIGNER ID NOT FOUND. PLEASE LOG IN AGAIN.", "error");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("item_name", document.getElementById("item_name").value.trim());
+    formData.append("description", document.getElementById("description").value.trim());
+    formData.append("category", document.getElementById("category").value);
+    formData.append("style", document.getElementById("style").value);
+    formData.append("occasion", document.getElementById("occasion").value.trim());
+    formData.append("price", parseFloat(document.getElementById("price").value));
+    formData.append("inventory", parseInt(document.getElementById("inventory").value));
+    formData.append("size_range", parseInt(document.getElementById("size_range").value));
+    formData.append("designer_id", designerId);
+    formData.append("image", document.getElementById("image").files[0]);
+
+    if (!formData.get("category") || !formData.get("style")) {
+        showMessage("PLEASE SELECT A CATEGORY AND STYLE", "error");
+        return;
+    }
+
+    if (!formData.get("image")) {
+        showMessage("PLEASE SELECT AN IMAGE", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/designer/projects`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            showMessage(`SUCCESS: ${data.message} (ITEM ID: ${data.item_id})`, "success");
+            form.reset();
+            document.getElementById("imagePreview").innerHTML = "";
+        } else {
+            showMessage(data.message || "COULD NOT CREATE LISTING", "error");
+        }
+    } catch (error) {
+        showMessage("SERVER CONNECTION FAILED", "error");
+    }
+});
+
+checkLoginStatus();
+</script>
+</body>
+</html>
