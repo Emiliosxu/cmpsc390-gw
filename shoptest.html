@@ -423,7 +423,6 @@
         border: 1px solid #ffffff;
     }
 
-    /* Modal Styles */
     .modal {
         display: none;
         position: fixed;
@@ -619,82 +618,90 @@
         </div>
     </div>
 </div>
-
 <script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let likedItems = [];
 let currentUser = null;
 let allItems = [];
+let currentDisplayedItems = [];
+let likedItems = [];
 let isSearchMode = false;
+
+const fetchWithSession = (url, options = {}) => {
+    return fetch(url, {
+        ...options,
+        credentials: "include",
+        headers: {
+            ...(options.headers || {})
+        }
+    });
+};
 
 const searchInput = document.getElementById("searchInput");
 const searchActionBtn = document.getElementById("searchActionBtn");
 
 async function checkLoginStatus() {
     try {
-        const res = await fetch("/check-session");
+        const res = await fetchWithSession("/check-session");
         const data = await res.json();
-        
+
         if (data.loggedIn) {
             currentUser = data;
+
             document.getElementById("login-link").style.display = "none";
             document.getElementById("register-link").style.display = "none";
-            document.getElementById("my-closet-link").style.display = "inline";
             document.getElementById("user-dropdown").style.display = "inline-block";
             document.getElementById("user-greeting").textContent = `Hello, ${data.userName.toUpperCase()}`;
+
+            const dashboardLink = document.getElementById("dashboard-link");
+            if (dashboardLink) {
+                if (data.accountType === "designer") {
+                    dashboardLink.href = "/designerdash.html";
+                    dashboardLink.textContent = "DASHBOARD";
+                } else {
+                    dashboardLink.href = "/userdash.html";
+                    dashboardLink.textContent = "MY CLOSET";
+                }
+                dashboardLink.style.display = "inline";
+            }
+
+            const cartBtn = document.getElementById("cart-btn");
+            if (cartBtn && data.accountType === "designer") {
+                cartBtn.style.display = "none";
+            }
         } else {
             currentUser = null;
             document.getElementById("login-link").style.display = "inline";
             document.getElementById("register-link").style.display = "inline";
-            document.getElementById("my-closet-link").style.display = "none";
             document.getElementById("user-dropdown").style.display = "none";
+
+            const dashboardLink = document.getElementById("dashboard-link");
+            if (dashboardLink) dashboardLink.style.display = "none";
         }
     } catch (error) {
-        console.error("Error checking login status:", error);
+        console.error("login check error:", error);
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    const logoutLink = document.getElementById("logout-link");
-    if (logoutLink) {
-        logoutLink.addEventListener("click", async function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            try {
-                const res = await fetch("/logout", { method: "POST" });
-                const data = await res.json();
-                if (data.success) {
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.error("Logout error:", error);
-            }
-        });
-    }
-});
-
 async function loadItems() {
     try {
-        const [itemsRes, likedRes] = await Promise.all([
-            fetch("/items"),
-            fetch("/liked-items")
-        ]);
-
+        const itemsRes = await fetchWithSession("/items");
         allItems = await itemsRes.json();
+
+        const likedRes = await fetchWithSession("/liked-items");
         const likedData = await likedRes.json();
         likedItems = likedData.likedIds || [];
 
         displayItems(allItems);
     } catch (error) {
-        console.error("Error loading items:", error);
+        console.error("load items error:", error);
     }
 }
 
 function displayItems(items) {
     const container = document.getElementById("items-container");
     container.innerHTML = "";
+    currentDisplayedItems = items || [];
 
-    if (items.length === 0) {
+    if (!items || items.length === 0) {
         container.innerHTML = `
             <div class="no-results">
                 <p>No items found</p>
@@ -712,19 +719,20 @@ function displayItems(items) {
         div.dataset.id = item.item_id;
 
         div.innerHTML = `
-            <img src="${item.image_url}" class="card-img" onerror="this.src='https://via.placeholder.com/400x280?text=NO+IMAGE'">
+            <img src="${item.image_url || "https://via.placeholder.com/400x280?text=NO+IMAGE"}" class="card-img" onerror="this.src='https://via.placeholder.com/400x280?text=NO+IMAGE'">
             <div class="card-content">
-                <h3>${item.item_name.toUpperCase()}</h3>
-                <p class="designer-name">[${item.brand_name.toUpperCase()}]</p>
+                <h3>${String(item.item_name || "").toUpperCase()}</h3>
+                <p class="designer-name">[${String(item.brand_name || "UNKNOWN").toUpperCase()}]</p>
                 <p class="item-price">$${item.price}</p>
                 <div class="card-buttons">
                     <button class="btn" onclick="addToCart(${item.item_id})"><i class="fas fa-shopping-cart"></i> [ADD]</button>
-                    <button class="btn like-btn">
-                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}"></i> ${isLiked ? "[LIKED]" : "[LIKE]"}
+                    <button class="btn like-btn" onclick="toggleLike(${item.item_id})">
+                        <i class="${isLiked ? "fas fa-heart" : "far fa-heart"}"></i> ${isLiked ? "[LIKED]" : "[LIKE]"}
                     </button>
                 </div>
             </div>
         `;
+
         container.appendChild(div);
     });
 }
@@ -736,23 +744,22 @@ async function performSearch(query) {
     }
 
     try {
-        const res = await fetch("/search?q=" + encodeURIComponent(query));
-        const searchResults = await res.json();
-        
-        const likedData = await fetch("/liked-items");
-        const likedResult = await likedData.json();
-        likedItems = likedResult.likedIds || [];
-        
+        const res = await fetchWithSession("/search?q=" + encodeURIComponent(query));
+        const results = await res.json();
+
+        const likedRes = await fetchWithSession("/liked-items");
+        const likedData = await likedRes.json();
+        likedItems = likedData.likedIds || [];
+
         isSearchMode = true;
         document.getElementById("search-header").classList.remove("hidden");
-        
-        searchActionBtn.innerHTML = '[CLR]';
+        searchActionBtn.innerHTML = "[CLR]";
         searchActionBtn.classList.add("search-active");
-        
-        displayItems(searchResults);
+
+        displayItems(results);
         document.getElementById("items-container").scrollIntoView({ behavior: "smooth" });
     } catch (error) {
-        console.error("Search error:", error);
+        console.error("search error:", error);
         alert("Error performing search. Please try again.");
     }
 }
@@ -761,7 +768,7 @@ function resetToAllItems() {
     searchInput.value = "";
     isSearchMode = false;
     document.getElementById("search-header").classList.add("hidden");
-    searchActionBtn.innerHTML = '[GO]';
+    searchActionBtn.innerHTML = "[GO]";
     searchActionBtn.classList.remove("search-active");
     displayItems(allItems);
 }
@@ -774,7 +781,7 @@ function toggleSearchClear() {
     }
 }
 
-function addToCart(id){
+function addToCart(id) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     cart.push(id);
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -783,35 +790,36 @@ function addToCart(id){
 
 async function showItemDetails(itemId) {
     try {
-        const res = await fetch(`/item/${itemId}`);
+        const res = await fetchWithSession(`/item/${itemId}`);
         const item = await res.json();
-        
+
         const modalContent = document.getElementById("modal-content-inner");
+
         modalContent.innerHTML = `
-            <img src="${item.image_url}" class="modal-item-image" onerror="this.src='https://via.placeholder.com/400x300?text=NO+IMAGE'">
-            <h2 class="modal-item-title">${(item.item_name || '').toUpperCase()}</h2>
-            <p class="designer-name" style="text-align: center;">[${(item.brand_name || 'UNKNOWN').toUpperCase()}]</p>
+            <img src="${item.image_url || "https://via.placeholder.com/400x300?text=NO+IMAGE"}" class="modal-item-image" onerror="this.src='https://via.placeholder.com/400x300?text=NO+IMAGE'">
+            <h2 class="modal-item-title">${String(item.item_name || "").toUpperCase()}</h2>
+            <p class="designer-name" style="text-align: center;">[${String(item.brand_name || "UNKNOWN").toUpperCase()}]</p>
             <div class="modal-item-price">$${Number(item.price || 0).toFixed(2)}</div>
             <div class="modal-item-details">
-                <div><strong>CATEGORY</strong><br>${item.category || 'N/A'}</div>
-                <div><strong>STYLE</strong><br>${item.style || 'N/A'}</div>
-                <div><strong>SIZE</strong><br>${item.size_range || 'N/A'}</div>
+                <div><strong>CATEGORY</strong><br>${item.category || "N/A"}</div>
+                <div><strong>STYLE</strong><br>${item.style || "N/A"}</div>
+                <div><strong>SIZE</strong><br>${item.size_range || "N/A"}</div>
                 <div><strong>INVENTORY</strong><br>${item.inventory || 0}</div>
             </div>
             <div class="modal-item-description">
                 <strong>description:</strong><br>
-                ${item.description || 'No description available for this item.'}
+                ${item.description || "No description available for this item."}
             </div>
             <div class="card-buttons" style="margin-top: 20px;">
                 <button class="btn" onclick="addToCart(${item.item_id})"><i class="fas fa-shopping-cart"></i> [ ADD TO CART ]</button>
                 <button class="btn" onclick="closeModal()"><i class="fas fa-times"></i> [ CLOSE ]</button>
             </div>
         `;
-        
+
         document.getElementById("itemModal").style.display = "block";
         document.body.style.overflow = "hidden";
     } catch (error) {
-        console.error("Error loading item details:", error);
+        console.error("item details error:", error);
         alert("Could not load item details");
     }
 }
@@ -821,22 +829,71 @@ function closeModal() {
     document.body.style.overflow = "auto";
 }
 
-//card click listner 
+async function toggleLike(itemId) {
+    if (!currentUser) {
+        alert("Login required");
+        window.location.href = "/login.html";
+        return;
+    }
+
+    if (currentUser.accountType === "designer") {
+        alert("Designers cannot like items.");
+        return;
+    }
+
+    try {
+        const res = await fetchWithSession("/like-item", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ itemId })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            if (data.liked) {
+                if (!likedItems.includes(itemId)) likedItems.push(itemId);
+            } else {
+                likedItems = likedItems.filter(id => id !== itemId);
+            }
+
+            displayItems(currentDisplayedItems);
+        } else if (data.error === "not_logged_in") {
+            alert("Login required");
+            window.location.href = "/login.html";
+        } else {
+            alert("Error, please try again");
+        }
+    } catch (error) {
+        console.error("like error:", error);
+        alert("Error connection failed");
+    }
+}
+
+searchInput?.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        if (isSearchMode) {
+            resetToAllItems();
+        } else {
+            performSearch(searchInput.value);
+        }
+    }
+});
+
+searchActionBtn?.addEventListener("click", toggleSearchClear);
+
 document.addEventListener("click", async function(e) {
     const card = e.target.closest(".card");
     if (!card) return;
-    
-    //buttons listner
     if (e.target.closest(".btn")) return;
-    
+
     const itemId = parseInt(card.dataset.id);
     await showItemDetails(itemId);
 });
 
-// close modal
 document.querySelector(".close-modal")?.addEventListener("click", closeModal);
 
-//close modal outside outside click
 window.addEventListener("click", function(e) {
     const modal = document.getElementById("itemModal");
     if (e.target === modal) {
@@ -844,69 +901,24 @@ window.addEventListener("click", function(e) {
     }
 });
 
-//close modal esc key
 document.addEventListener("keydown", function(e) {
     if (e.key === "Escape") {
         closeModal();
     }
 });
 
-//like button handler
-document.addEventListener("click", async function(e){
-    const likeBtn = e.target.closest(".like-btn");
-    if(!likeBtn) return;
-
-    if (!currentUser) {
-        alert(" Access denied, login required");
-        window.location.href = "/login.html";
-        return;
-    }
-
-    const card = likeBtn.closest(".card");
-    const itemId = parseInt(card.dataset.id);
+document.getElementById("logout-link")?.addEventListener("click", async function(e) {
+    e.preventDefault();
 
     try {
-        const res = await fetch("/like-item", {
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({ itemId })
-        });
-
+        const res = await fetchWithSession("/logout", { method: "POST" });
         const data = await res.json();
 
-        if(data.success){
-            const icon = likeBtn.querySelector('i');
-            const text = likeBtn.childNodes[likeBtn.childNodes.length - 1];
-            
-            if (data.liked) {
-                icon.className = 'fas fa-heart';
-                text.textContent = ' [LIKED]';
-                likedItems.push(itemId);
-            } else {
-                icon.className = 'far fa-heart';
-                text.textContent = ' [LIKE]';
-                likedItems = likedItems.filter(id => id !== itemId);
-            }
-        } else if (data.error === "not_logged_in") {
-            alert("ACCESS DENIED // LOGIN REQUIRED");
-            window.location.href = "/login.html";
-        } else {
-            alert("Error try again");
+        if (data.success) {
+            window.location.href = "/";
         }
     } catch (error) {
-        console.error("Error liking item:", error);
-        alert("Error connection failed");
-    }
-});
-
-searchInput.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        if (isSearchMode) {
-            resetToAllItems();
-        } else {
-            performSearch(this.value);
-        }
+        console.error("logout error:", error);
     }
 });
 
@@ -914,5 +926,6 @@ checkLoginStatus().then(() => {
     loadItems();
 });
 </script>
+
 </body>
 </html>
