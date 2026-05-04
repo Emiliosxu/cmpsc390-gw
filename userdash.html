@@ -516,6 +516,16 @@
 let currentUser = null;
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+    const fetchWithSession = (url, options ={}) => {
+    return fetch(url,{
+        ...options,
+        credentials: "include",
+        headers:{
+            ...(options.headers || {})
+        }
+    });
+};
+
 const searchInput = document.getElementById("searchInput");
 
 function performSearch() {
@@ -541,7 +551,7 @@ if (searchActionBtn) {
 
 async function loadProfilePicture() {
     try {
-        const res = await fetch("/user-profile");
+        const res = await fetchWithSession("/user-profile");
         const data = await res.json();
         if (data.success && data.profile && data.profile.profile_pic) {
             document.getElementById("profile-img").src = data.profile.profile_pic + "?t=" + Date.now();
@@ -553,7 +563,7 @@ async function loadProfilePicture() {
 
 async function checkLoginStatus() {
     try {
-        const res = await fetch("/check-session");
+        const res = await fetchWithSession("/check-session");
         const data = await res.json();
         
         if (data.loggedIn) {
@@ -615,7 +625,7 @@ document.getElementById("profile-pic-upload")?.addEventListener("change", async 
     reader.readAsDataURL(file);
     
     try {
-        const res = await fetch("/upload-user-profile", {
+        const res = await fetchWithSession("/upload-user-profile", {
             method: "POST",
             body: formData
         });
@@ -638,11 +648,11 @@ document.getElementById("profile-pic-upload")?.addEventListener("change", async 
 
 async function loadLikedItems() {
     try {
-        const res = await fetch("/liked-items");
+        const res = await fetchWithSession("/liked-items");
         const data = await res.json();
         
         if (data.success && data.likedIds && data.likedIds.length > 0) {
-            const itemsRes = await fetch("/items");
+            const itemsRes = await fetchWithSession("/items");
             const allItems = await itemsRes.json();
             const likedItems = allItems.filter(item => data.likedIds.includes(item.item_id));
             displayLikedItems(likedItems);
@@ -699,7 +709,7 @@ function updateCartDisplay() {
         return;
     }
 
-    fetch("/get-cart-items", {
+    fetchWithSession("/get-cart-items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cart: cartItems })
@@ -734,7 +744,7 @@ document.addEventListener("DOMContentLoaded", function() {
             e.preventDefault();
             e.stopPropagation();
             try {
-                const res = await fetch("/logout", { method: "POST" });
+                const res = await fetchWithSession("/logout", { method: "POST" });
                 const data = await res.json();
                 if (data.success) {
                     window.location.href = "/";
@@ -749,7 +759,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async function() {
             try {
-                const res = await fetch("/logout", { method: "POST" });
+                const res = await fetchWithSession("/logout", { method: "POST" });
                 const data = await res.json();
                 if (data.success) {
                     window.location.href = "/";
