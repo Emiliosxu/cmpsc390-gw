@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>View Projects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #06194e, #2D83A6, #4c07c3);
+            background-size: 300% 300%;
+            animation: gradientMove 10s ease infinite;
+            color: #F0F0F2;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .navbar {
+            background-color: rgb(35, 39, 96);
+            padding: 14px 24px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+
+        .navbar a {
+            color: #dce7ff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar a:hover {
+            color: white;
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: auto;
+            background: rgba(122, 157, 218, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 38px;
+        }
+
+        .top-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input,
+        button {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+        }
+
+        input {
+            min-width: 220px;
+        }
+
+        button {
+            background: #5577e6;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            opacity: 0.92;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .detail {
+            margin: 6px 0;
+            font-size: 15px;
+        }
+
+        .delete-btn {
+            margin-top: 14px;
+            width: 100%;
+            background: rgba(220, 20, 60, 0.85);
+        }
+
+        .stats {
+            margin-bottom: 20px;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .message {
+            display: none;
+            margin-bottom: 20px;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .success {
+            background: rgba(60, 179, 113, 0.25);
+            border: 1px solid rgba(60, 179, 113, 0.5);
+        }
+
+        .error {
+            background: rgba(220, 20, 60, 0.2);
+            border: 1px solid rgba(220, 20, 60, 0.45);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="login.html">Login</a>
+        <a href="designerdash.html">Dashboard</a>
+    </div>
+
+    <div class="page-container">
+        <h1>View Projects</h1>
+
+        <div class="top-bar">
+            <div class="filters">
+                <input type="number" id="designerId" value="1" placeholder="Designer ID">
+                <input type="text" id="searchBox" placeholder="Search by item name or category">
+                <button onclick="loadProjects()">Refresh</button>
+            </div>
+        </div>
+
+        <div id="messageBox" class="message"></div>
+        <div id="stats" class="stats">Loading projects...</div>
+        <div id="projectsContainer" class="cards"></div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:3000";
+        let allProjects = [];
+
+        function showMessage(text, type) {
+            const messageBox = document.getElementById("messageBox");
+            messageBox.style.display = "block";
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = text;
+        }
+
+        function renderProjects(projects) {
+            const container = document.getElementById("projectsContainer");
+            const stats = document.getElementById("stats");
+
+            if (projects.length === 0) {
+                container.innerHTML = "<p>No projects found.</p>";
+                stats.textContent = "0 projects shown";
+                return;
+            }
+
+            stats.textContent = `${projects.length} project(s) shown`;
+
+            container.innerHTML = projects.map(project => `
+                <div class="card">
+                    <h3>${project.item_name}</h3>
+                    <p class="detail"><strong>Item ID:</strong> ${project.item_id}</p>
+                    <p class="detail"><strong>Category:</strong> ${project.category}</p>
+                    <p class="detail"><strong>Style:</strong> ${project.style}</p>
+                    <p class="detail"><strong>Occasion:</strong> ${project.occasion || "N/A"}</p>
+                    <p class="detail"><strong>Price:</strong> $${Number(project.price).toFixed(2)}</p>
+                    <p class="detail"><strong>Inventory:</strong> ${project.inventory}</p>
+                    <p class="detail"><strong>Size Range:</strong> ${project.size_range}</p>
+                    <p class="detail"><strong>Image:</strong> ${project.image_url}</p>
+                    <button class="delete-btn" onclick="deleteProject(${project.item_id})"Delete Project</button>
+                </div>
+            `).join("");
+        }
+
+        async function loadProjects() {
+            const designerId = document.getElementById("designerId").value;
+
+            if (!designerId || designerId <= 0) {
+                showMessage("Please enter a valid Designer ID.", "error");
+                return;
+            }
+
+            const messageBox = document.getElementById("messageBox");
+            messageBox.style.display = "none";
+            document.getElementById("stats").textContent = "Loading...";
+            document.getElementById("projectsContainer").innerHTML = "";
+
+            try {
+                const response = await fetch(`${API_BASE}/designer/projects/${designerId}`);
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    showMessage(data.message || "Could not load projects.", "error");
+                    document.getElementById("stats").textContent = "";
+                    return;
+                }
+
+                const data = await response.json();
+                allProjects = data;
+                applySearch();
+            } catch (error) {
+                showMessage("Server connection failed. Make sure your server is running on port 3000.", "error");
+                document.getElementById("stats").textContent = "";
+            }
+        }
+
+        function applySearch() {
+            const searchText = document.getElementById("searchBox").value.toLowerCase();
+
+            const filtered = allProjects.filter(project =>
+                project.item_name.toLowerCase().includes(searchText) ||
+                project.category.toLowerCase().includes(searchText) ||
+                project.style.toLowerCase().includes(searchText)
+            );
+
+            renderProjects(filtered);
+        }
+
+        async function deleteProject(itemId) {
+            const confirmDelete = confirm("Are you sure you want to delete this project?");
+            if (!confirmDelete) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/designer/projects/${itemId}`, {
+                    method: "DELETE"
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showMessage(data.message, "success");
+                    loadProjects();
+                } else {
+                    showMessage(data.message || "Delete failed.", "error");
+                }
+            } catch (error) {
+                showMessage("Server connection failed while deleting.", "error");
+            }
+        }
+
+        document.getElementById("searchBox").addEventListener("input", applySearch);
+        document.getElementById("designerId").addEventListener("change", loadProjects);
+
+        loadProjects();
+    </script>
+</body>
+
+</html>

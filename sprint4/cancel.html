@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STLYIX</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    @font-face {
+        src: url(fonts/YAGIZA__.TTF);
+        font-family: YAGIZA;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #0a0a0a;
+        font-family: 'Space Mono', 'Share Tech Mono', monospace;
+        color: #ffffff;
+        margin: 0;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 20px 20px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .crt-effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 40px;
+        z-index: 1000;
+        border-bottom: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .navbar-left .logo {
+        font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-decoration: none;
+        letter-spacing: 4px;
+        text-shadow: 0 0 5px #ffffff;
+    }
+
+    .navbar-left .logo span {
+        color: #ff00ff;
+        text-shadow: 0 0 5px #ff00ff;
+    }
+
+    .navbar-left a, .navbar-right a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .navbar-left a::before, .navbar-right a::before {
+        content: '>';
+        position: absolute;
+        left: -12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .navbar-left a:hover::before, .navbar-right a:hover::before {
+        opacity: 1;
+    }
+
+    .navbar-left a:hover, .navbar-right a:hover {
+        color: #ff00ff;
+        padding-left: 8px;
+    }
+
+    .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        padding: 5px 5px 5px 15px;
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-icon {
+        color: #ffffff;
+        font-size: 0.9rem;
+    }
+
+    .search-input {
+        background: transparent;
+        border: none;
+        padding: 8px 10px;
+        color: #ffffff;
+        font-size: 0.85rem;
+        width: 180px;
+        outline: none;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-action-btn {
+        background: #ffffff;
+        border: none;
+        color: #0a0a0a;
+        padding: 6px 16px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        font-family: 'Share Tech Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .search-action-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .user-dropdown {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .greeting-text {
+        color: #ffffff;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #ffffff;
+        font-size: 0.85rem;
+        font-family: 'Space Mono', monospace;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 10px;
+        background: #0a0a0a;
+        min-width: 140px;
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #ffffff;
+        padding: 12px 20px;
+        display: block;
+        font-size: 0.8rem;
+    }
+
+    .dropdown-content a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ff00ff;
+    }
+
+    .user-dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    #cart-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .page-header {
+        text-align: center;
+        margin: 100px 0 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 400;
+        color: #ffffff;
+        font-family: 'Share Tech Mono', monospace;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+    }
+
+    .page-header .accent-line {
+        width: 80px;
+        height: 2px;
+        background: #ff00ff;
+        margin: 15px auto 0;
+        box-shadow: 0 0 5px #ff00ff;
+    }
+
+    .cancel-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+        position: relative;
+        z-index: 1;
+        padding: 20px;
+    }
+
+    .cancel-card {
+        background: rgba(10, 10, 10, 0.95);
+        border: 1px solid #ffffff;
+        padding: 50px;
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .cancel-card:hover {
+        border-color: #ff00ff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        transform: translateY(-5px);
+    }
+
+    .cancel-icon {
+        font-size: 4rem;
+        color: #ff4444;
+        margin-bottom: 20px;
+    }
+
+    .cancel-card h2 {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 1.8rem;
+        color: #ff4444;
+        margin-bottom: 15px;
+        letter-spacing: 2px;
+    }
+
+    .cancel-card p {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.8);
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .cancel-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cancel-btn {
+        padding: 12px 25px;
+        background: transparent;
+        border: 1px solid #ffffff;
+        color: #ffffff;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .cancel-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+        border-color: #ff00ff;
+        box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .retry-btn {
+        border-color: #ff00ff;
+        color: #ff00ff;
+    }
+
+    .retry-btn:hover {
+        background: #ff00ff;
+        color: #0a0a0a;
+    }
+
+    @media(max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px 20px;
+        }
+        .navbar-left, .navbar-right {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .search-container {
+            width: 100%;
+        }
+        .search-input {
+            flex-grow: 1;
+            width: auto;
+        }
+        .page-header {
+            margin-top: 140px;
+        }
+        .cancel-card {
+            padding: 30px;
+            margin: 20px;
+        }
+        .cancel-card h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="crt-effect"></div>
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="/" class="logo">STLYIX</a>
+        <a href="/">>HOME</a>
+        <a href="/shoptest.html">>SHOP</a>
+        <a href="/userdash.html" id="my-closet-link" style="display: none;">USERDASH</a>
+    </div>
+    <div class="navbar-right">
+        <a href="checkout.html" id="cart-btn"><i class="fas fa-shopping-cart"></i> [CART]</a>
+        <div class="search-container">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="search-input" placeholder="SEARCH...">
+            <button id="searchActionBtn" class="search-action-btn" onclick="performSearch()">[GO]</button>
+        </div>
+        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+            <span class="greeting-text" id="user-greeting">Hello, USER</span>
+            <div class="dropdown-content">
+                <a href="#" id="logout-link">[LOGOUT]</a>
+            </div>
+        </div>
+        <a href="/login.html" id="login-link">LOGIN</a>
+        <a href="/register.html" id="register-link">[SIGNUP]</a>
+    </div>
+</nav>
+
+<div class="page-header">
+    <h1>PAYMENT CANCELED </h1>
+    <div class="accent-line"></div>
+</div>
+
+<div class="cancel-container">
+    <div class="cancel-card">
+        <div class="cancel-icon">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <h2>Payment canceled.</h2>
+        <p>Your payment was not completed. No charges have been made to your account.</p>
+        <div class="cancel-buttons">
+            <a href="/shoptest.html" class="cancel-btn"><i class="fas fa-shopping-bag"></i> [ CONTINUE SHOPPING ]</a>
+            <a href="/checkout.html" class="cancel-btn retry-btn"><i class="fas fa-redo-alt"></i> [ RETRY PAYMENT ]</a>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentUser = null;
+const searchInput = document.getElementById("searchInput");
+
+function performSearch() {
+    const query = searchInput.value;
+    if (query && query.trim() !== "") {
+        window.location.href = `/shoptest.html?search=${encodeURIComponent(query)}`;
+    }
+}
+
+searchInput?.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        performSearch();
+    }
+});
+
+const searchActionBtn = document.getElementById("searchActionBtn");
+if (searchActionBtn) {
+    searchActionBtn.addEventListener("click", function() {
+        performSearch();
+    });
+}
+
+async function checkLoginStatus() {
+    try {
+        const res = await fetch("/check-session");
+        const data = await res.json();
+        
+        if (data.loggedIn) {
+            document.getElementById("login-link").style.display = "none";
+            document.getElementById("register-link").style.display = "none";
+            document.getElementById("user-dropdown").style.display = "inline-block";
+            document.getElementById("user-greeting").textContent = `Hello, ${data.userName.toUpperCase()}`;
+            
+            if (data.accountType === 'designer') {
+                document.getElementById("my-closet-link").style.display = "none";
+                document.getElementById("cart-btn").style.display = "none";
+            } else {
+                document.getElementById("my-closet-link").style.display = "inline";
+                document.getElementById("cart-btn").style.display = "inline";
+            }
+        } else {
+            document.getElementById("login-link").style.display = "inline";
+            document.getElementById("register-link").style.display = "inline";
+            document.getElementById("user-dropdown").style.display = "none";
+            document.getElementById("my-closet-link").style.display = "none";
+        }
+    } catch (error) {
+        console.error("Error checking login status:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutLink = document.getElementById("logout-link");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+                const res = await fetch("/logout", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+    }
+});
+
+checkLoginStatus();
+</script>
+</body>
+</html>

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>STLYIX</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            src: url(fonts/YAGIZA__.TTF);
+            font-family: YAGIZA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            font-family: 'Space Mono', 'Share Tech Mono', monospace;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .crt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.15),
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 2px);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            z-index: 1000;
+            border-bottom: 1px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .navbar-left .logo {
+            font-family: 'YAGIZA', 'Share Tech Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 4px;
+            text-shadow: 0 0 5px #ffffff;
+        }
+
+        .navbar-left .logo span {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        .navbar-left a,
+        .navbar-right a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .navbar-left a::before,
+        .navbar-right a::before {
+            content: '>';
+            position: absolute;
+            left: -12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .navbar-left a:hover::before,
+        .navbar-right a:hover::before {
+            opacity: 1;
+        }
+
+        .navbar-left a:hover,
+        .navbar-right a:hover {
+            color: #ff00ff;
+            padding-left: 8px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            padding: 5px 5px 5px 15px;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .search-icon {
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            padding: 8px 10px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            width: 180px;
+            outline: none;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-action-btn {
+            background: #ffffff;
+            border: none;
+            color: #0a0a0a;
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-action-btn:hover {
+            background: #ff00ff;
+            color: #0a0a0a;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .greeting-text {
+            color: #ffffff;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 10px;
+            background: #0a0a0a;
+            min-width: 140px;
+            border: 1px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #ffffff;
+            padding: 12px 20px;
+            display: block;
+            font-size: 0.8rem;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ff00ff;
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .page-header {
+            text-align: center;
+            margin: 100px 0 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .page-header .accent-line {
+            width: 80px;
+            height: 2px;
+            background: #ff00ff;
+            margin: 15px auto 0;
+            box-shadow: 0 0 5px #ff00ff;
+        }
+
+        .dashboard-wrapper {
+            display: flex;
+            gap: 30px;
+            padding: 20px 40px 60px;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-left {
+            width: 350px;
+            flex-shrink: 0;
+        }
+
+        .dashboard-right {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .dashboard-card {
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid #ffffff;
+            padding: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card:hover {
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ff00ff;
+            margin-bottom: 20px;
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            color: #ff00ff;
+            margin-bottom: 5px;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .dashboard-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: transparent;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dashboard-btn:hover {
+            background: #ff00ff;
+            color: #0a0a0a;
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #ff00ff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .projects-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .projects-search-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 5px;
+            color: #ffffff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            width: 220px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .projects-search-input:focus {
+            border-bottom-color: #ff00ff;
+        }
+
+        .projects-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .refresh-icon {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+
+        .refresh-icon:hover {
+            color: #ff00ff;
+            transform: rotate(90deg);
+        }
+
+        .stats {
+            font-size: 0.7rem;
+            color: #ff00ff;
+            margin-bottom: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .project-card {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .project-card:hover::before {
+            left: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            filter: grayscale(20%) contrast(110%);
+            transition: all 0.5s ease;
+        }
+
+        .project-card:hover .project-image {
+            filter: grayscale(0%) contrast(120%);
+        }
+
+        .project-content {
+            padding: 15px;
+        }
+
+        .project-card h3 {
+            font-size: 0.85rem;
+            font-weight: 400;
+            margin: 0 0 8px 0;
+            color: #ffffff;
+            letter-spacing: 1px;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .project-category {
+            color: #ff00ff;
+            margin: 5px 0;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .project-price {
+            color: #ffffff;
+            margin: 8px 0;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .project-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .project-detail-item {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 4px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .project-detail-item strong {
+            color: #ff00ff;
+        }
+
+        .delete-project-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .delete-project-btn:hover {
+            background: #ff4444;
+            color: #0a0a0a;
+            border-color: #ff4444;
+        }
+
+        .empty-message {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff6666;
+        }
+
+        @media(max-width: 1200px) {
+            .projects-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media(max-width: 900px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+
+            .dashboard-left {
+                width: 100%;
+            }
+
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 20px;
+            }
+
+            .navbar-left,
+            .navbar-right {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+
+            .search-input {
+                flex-grow: 1;
+                width: auto;
+            }
+
+            .page-header {
+                margin-top: 140px;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="crt-effect"></div>
+
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a href="index.html" class="logo">STYLIX</a>
+            <a href="index.html">HOME</a>
+            <a href="shoptest.html">SHOP</a>
+            <a href="aboutus.html">ABOUT</a>
+            <a href="contact.html">CONTACT</a>
+            <a href="exploreDesigners.html">DESIGNERS</a>
+
+        </div>
+        <div class="navbar-right">
+            <a href="checkout.html" id="cart-btn"><i class="fas fa-shopping-cart"></i> [CART]</a>
+            <div class="search-container">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+                <input type="text" id="searchInput" class="search-input" placeholder="SEARCH...">
+                <button id="searchActionBtn" class="search-action-btn" onclick="performSearch()">[GO]</button>
+            </div>
+            <div class="user-dropdown" id="user-dropdown" style="display: none;">
+                <span class="greeting-text" id="user-greeting">Hello, USER</span>
+                <div class="dropdown-content">
+                    <a href="#" id="logout-link">[LOGOUT]</a>
+                </div>
+            </div>
+            <a href="/login.html" id="login-link">LOGIN</a>
+            <a href="/register.html" id="register-link">[SIGNUP]</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1> DESIGNER DASHBOARD </h1>
+        <div class="accent-line"></div>
+    </div>
+
+    <div class="dashboard-wrapper">
+        <!-- Profile and Tools -->
+        <div class="dashboard-left">
+            <!-- Profile Card -->
+            <div class="dashboard-card">
+                <div style="text-align: center;">
+                    <div class="user-name" id="designer-name">LOADING...</div>
+                    <div class="user-role">DESIGNER </div>
+                </div>
+                <button class="dashboard-btn" id="view-profile-btn">[ VIEW PROFILE ]</button>
+                <button class="dashboard-btn" id="logout-btn">[ LOGOUT ]</button>
+            </div>
+
+            <!-- Designer Tools Card -->
+            <div class="dashboard-card">
+                <div class="section-title">DESIGNER TOOLS</div>
+                <button class="dashboard-btn" id="create-listing-btn"><i class="fas fa-plus-circle"></i> [ CREATE
+                    LISTING ]</button>
+                <button class="dashboard-btn" id="upload-assets-btn"><i class="fas fa-upload"></i> [ UPLOAD ASSETS
+                    ]</button>
+                <button class="dashboard-btn" id="analytics-btn" onclick="loadAnalytics()"><i
+                        class="fas fa-chart-line"></i> [ ANALYTICS ]</button>
+            </div>
+
+            <!-- Analytics Card -->
+            <div class="dashboard-card" id="analytics-card" style="display: none;">
+                <div class="section-title">ANALYTICS</div>
+                <div class="stats" style="text-align: center; margin-bottom: 15px;">ITEMS SOLD: <span
+                        id="items-sold">-</span></div>
+                <div class="stats" style="text-align: center; margin-bottom: 15px;">REVENUE: $<span
+                        id="total-revenue">-</span></div>
+                <div class="stats" style="text-align: center; margin-bottom: 15px;">INVENTORY LEFT: <span
+                        id="inventory-left">-</span></div>
+                <p id="analytics-summary" style="font-size: 0.7rem; text-align: center; color: rgba(255,255,255,0.5);">
+                </p>
+                <p id="last-updated" style="font-size: 0.65rem; text-align: center; color: rgba(255,255,255,0.4);"></p>
+                <button class="dashboard-btn" onclick="loadAnalytics()">[ REFRESH ]</button>
+                <button class="dashboard-btn" onclick="hideAnalytics()">[ HIDE ]</button>
+            </div>
+        </div>
+
+        <!--Listings-->
+        <div class="dashboard-right">
+            <div class="dashboard-card" style="margin-bottom: 0;">
+                <div class="section-title"> MY LISTINGS</div>
+
+                <div class="projects-header">
+                    <div class="projects-search">
+                        <input type="text" id="searchBox" class="projects-search-input" placeholder="SEARCH ITEMS...">
+                        <button class="refresh-icon" onclick="loadProjects()"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div id="stats" class="stats"> LOADING...</div>
+                </div>
+
+                <div id="messageBox" class="message"></div>
+                <div id="projectsContainer" class="projects-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let allProjects = [];
+
+        const searchInput = document.getElementById("searchInput");
+        function performSearch() {
+            const query = searchInput.value;
+            if (query && query.trim() !== "") {
+                window.location.href = `/shoptest.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        searchInput?.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                performSearch();
+            }
+        });
+
+        const searchActionBtn = document.getElementById("searchActionBtn");
+        if (searchActionBtn) {
+            searchActionBtn.addEventListener("click", function () {
+                performSearch();
+            });
+        }
+
+        function scrollToProjects() {
+            document.querySelector('.dashboard-right').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showMessage(text, type) {
+            const messageBox = document.getElementById("messageBox");
+            messageBox.style.display = "block";
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = `> ${text}`;
+        }
+
+        function renderProjects(projects) {
+            const container = document.getElementById("projectsContainer");
+            const stats = document.getElementById("stats");
+
+            if (projects.length === 0) {
+                container.innerHTML = '<div class="empty-message">> NO_LISTINGS_FOUND</div>';
+                stats.textContent = "> 0 ITEMS";
+                return;
+            }
+
+            stats.textContent = `> ${projects.length} ITEM(S)`;
+
+            container.innerHTML = projects.map(project => `
+        <div class="project-card">
+            <img src="${project.image_url || 'https://via.placeholder.com/300x180?text=NO+IMAGE'}" class="project-image" onerror="this.src='https://via.placeholder.com/300x180?text=NO+IMAGE'">
+            <div class="project-content">
+                <h3>${project.item_name.toUpperCase()}</h3>
+                <div class="project-category">[${project.category.toUpperCase()}]</div>
+                <div class="project-price">$${Number(project.price).toFixed(2)}</div>
+                <div class="project-details">
+                    <div class="project-detail-item">
+                        <span>STYLE:</span>
+                        <strong>${project.style}</strong>
+                    </div>
+                    <div class="project-detail-item">
+                        <span>INVENTORY:</span>
+                        <strong>${project.inventory}</strong>
+                    </div>
+                    <div class="project-detail-item">
+                        <span>SIZE:</span>
+                        <strong>${project.size_range}</strong>
+                    </div>
+                </div>
+                <button class="delete-project-btn" onclick="deleteProject(${project.item_id})">[ DELETE ]</button>
+            </div>
+        </div>
+    `).join("");
+        }
+
+        async function loadProjects() {
+            if (!currentUser || !currentUser.userId) {
+                showMessage("DESIGNER ID NOT FOUND", "error");
+                return;
+            }
+
+            const designerId = currentUser.userId;
+            const messageBox = document.getElementById("messageBox");
+            messageBox.style.display = "none";
+            document.getElementById("stats").textContent = " LOADING...";
+            document.getElementById("projectsContainer").innerHTML = "";
+
+            try {
+                const response = await fetch(`/designer/projects/${designerId}`);
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    showMessage(data.message || "Couldnt load listings", "error");
+                    document.getElementById("stats").textContent = "";
+                    return;
+                }
+
+                const data = await response.json();
+                allProjects = data;
+                applySearch();
+            } catch (error) {
+                showMessage("SERVER CONNECTION FAILED", "error");
+                document.getElementById("stats").textContent = "";
+            }
+        }
+
+        function applySearch() {
+            const searchText = document.getElementById("searchBox").value.toLowerCase();
+            const filtered = allProjects.filter(project =>
+                project.item_name.toLowerCase().includes(searchText) ||
+                project.category.toLowerCase().includes(searchText) ||
+                project.style.toLowerCase().includes(searchText)
+            );
+            renderProjects(filtered);
+        }
+
+        async function deleteProject(itemId) {
+            const confirmDelete = confirm("confirm delete?");
+            if (!confirmDelete) return;
+
+            try {
+                const response = await fetch(`/designer/projects/${itemId}`, {
+                    method: "DELETE"
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showMessage(data.message, "success");
+                    loadProjects();
+                } else {
+                    showMessage(data.message || "Delete failed", "error");
+                }
+            } catch (error) {
+                showMessage("SERVER CONNECTION FAILED", "error");
+            }
+        }
+
+        async function checkLoginStatus() {
+            try {
+                const res = await fetch("/check-session");
+                const data = await res.json();
+
+                if (data.loggedIn) {
+                    currentUser = data;
+                    document.getElementById("login-link").style.display = "none";
+                    document.getElementById("register-link").style.display = "none";
+                    document.getElementById("user-dropdown").style.display = "inline-block";
+                    document.getElementById("user-greeting").textContent = `DESIGNER, ${data.userName.toUpperCase()}`;
+                    document.getElementById("designer-name").textContent = data.userName.toUpperCase();
+
+                    document.getElementById("my-closet-link").style.display = "none";
+                    document.getElementById("cart-btn").style.display = "none";
+
+                    loadProjects();
+                } else {
+                    window.location.href = "/login.html";
+                }
+            } catch (error) {
+                console.error("Error checking login status:", error);
+                window.location.href = "/login.html";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", async function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try {
+                        const res = await fetch("/logout", { method: "POST" });
+                        const data = await res.json();
+                        if (data.success) {
+                            window.location.href = "/";
+                        }
+                    } catch (error) {
+                        console.error("Logout error:", error);
+                    }
+                });
+            }
+
+            const logoutBtn = document.getElementById("logout-btn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", async function () {
+                    try {
+                        const res = await fetch("/logout", { method: "POST" });
+                        const data = await res.json();
+                        if (data.success) {
+                            window.location.href = "/";
+                        }
+                    } catch (error) {
+                        console.error("Logout error:", error);
+                    }
+                });
+            }
+
+            const viewProfileBtn = document.getElementById("view-profile-btn");
+            if (viewProfileBtn) {
+                viewProfileBtn.addEventListener("click", function () {
+                    alert(" VIEW PROFILE COMING SOON");
+                });
+            }
+
+            const editProfileBtn = document.getElementById("edit-profile-btn");
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener("click", function () {
+                    alert(" EDIT PROFILE COMING SOON");
+                });
+            }
+
+            const createListingBtn = document.getElementById("create-listing-btn");
+            if (createListingBtn) {
+                createListingBtn.addEventListener("click", function () {
+                    window.location.href = "/createproject.html";
+                });
+            }
+
+            const uploadAssetsBtn = document.getElementById("upload-assets-btn");
+            if (uploadAssetsBtn) {
+                uploadAssetsBtn.addEventListener("click", function () {
+                    alert("> Upload assest coming soon");
+                });
+            }
+
+            document.getElementById("searchBox").addEventListener("input", applySearch);
+        });
+
+        async function loadAnalytics() {
+            const card = document.getElementById("analytics-card");
+            const summary = document.getElementById("analytics-summary");
+            const updated = document.getElementById("last-updated");
+
+            if (card) {
+                card.style.display = "block";
+                card.scrollIntoView({ behavior: "smooth" });
+            }
+
+            try {
+                const res = await fetch("/designer/analytics");
+                const data = await res.json();
+
+                document.getElementById("items-sold").textContent = data.items_sold || 0;
+                document.getElementById("total-revenue").textContent = data.total_revenue || 0;
+                document.getElementById("inventory-left").textContent = data.inventory_left || 0;
+
+                if (summary) {
+                    const itemsSold = data.items_sold || 0;
+                    summary.textContent = itemsSold > 5 ? "Sales performance: exellent" : "Sales performance: growing";
+                }
+
+                if (updated) {
+                    updated.textContent = " LAST UPDATED: " + new Date().toLocaleTimeString();
+                }
+
+            } catch (error) {
+                if (summary) {
+                    summary.textContent = "ERROR LOADING ANALYTICS";
+                }
+                console.error("Analytics fetch error:", error);
+            }
+        }
+
+        function hideAnalytics() {
+            const card = document.getElementById("analytics-card");
+            if (card) {
+                card.style.display = "none";
+            }
+        }
+
+        checkLoginStatus();
+    </script>
+</body>
+
+</html>
